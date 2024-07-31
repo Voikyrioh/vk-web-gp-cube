@@ -1,3 +1,11 @@
+/*
+Copyright (c) 2024, Yoann Pommier
+All rights reserved.
+
+This source code is licensed under the BSD-style license found in the
+LICENSE file in the root directory of this source tree.
+ */
+
 import shader from "../../shaders/basic.wgsl?raw"
 import {Cube} from "../core/class/Cube.ts";
 import Vector3 from "../core/class/Vector3.ts";
