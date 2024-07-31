@@ -32,7 +32,9 @@ async function startProgram() {
     const gpuContext = await Core.initWebGPUContext(canvasContext);
 
     do {
-        await Promise.all([new Promise(resolve => setTimeout(resolve, 1000/120)), await drawCube(gpuContext.device, gpuContext.canvas)])
+        await Promise.all([
+            new Promise(resolve => setTimeout(resolve, 1000/120)), // FORCE TO 60 FPS MAX
+            await drawCube(gpuContext.device, gpuContext.canvas)]) // DRAW FUNCTION #TODO: Rename
     } while (true)
 }
 

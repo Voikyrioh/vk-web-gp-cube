@@ -13,6 +13,26 @@
       </div>
       <div id="app-options">
         <div class="app-option">
+          <label for="x-slider">X</label>
+          <input id="x-slider" type="range" min="-400" max="400" step="1" value="0" oninput="document.getElementById('x-slider-out').textContent = event.target.value"/>
+          <output id="x-slider-out">0</output>
+        </div>
+        <div class="app-option">
+          <label for="y-slider">Y</label>
+          <input id="y-slider" type="range" min="-300" max="300" step="1" value="0" oninput="document.getElementById('y-slider-out').textContent = event.target.value"/>
+          <output id="y-slider-out">0</output>
+        </div>
+        <div class="app-option">
+          <label for="z-slider">Z</label>
+          <input id="z-slider" type="range" min="-400" max="400" step="1" value="0" oninput="document.getElementById('z-slider-out').textContent = event.target.value"/>
+          <output id="z-slider-out">0</output>
+        </div>
+        <div class="app-option">
+          <label for="size-slider">Size</label>
+          <input id="size-slider" type="range" min="1" max="400" step="1" value="100" oninput="document.getElementById('size-slider-out').textContent = event.target.value"/>
+          <output id="size-slider-out">0</output>
+        </div>
+        <div class="app-option">
           <label for="angle-x-slider">Angle X</label>
           <input id="angle-x-slider" type="range" min="-180" max="180" step="1" value="0" oninput="document.getElementById('angle-x-slider-out').textContent = event.target.value"/>
           <output id="angle-x-slider-out">0</output>
