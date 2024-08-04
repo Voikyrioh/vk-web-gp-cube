@@ -21,7 +21,7 @@ export default async function drawCube(device: GPUDevice, context: GPUCanvasCont
     return new Promise(resolve => {
         const sliderX = (document.getElementById('x-slider') as HTMLInputElement);
         const sliderY = (document.getElementById('y-slider') as HTMLInputElement);
-        const sliderZ = (document.getElementById('z-slider') as HTMLInputElement);
+        //const sliderZ = (document.getElementById('z-slider') as HTMLInputElement);
         const sliderSize = (document.getElementById('size-slider') as HTMLInputElement);
         const sliderAX = (document.getElementById('angle-x-slider') as HTMLInputElement);
         const sliderAY = (document.getElementById('angle-y-slider') as HTMLInputElement);
@@ -48,7 +48,7 @@ export default async function drawCube(device: GPUDevice, context: GPUCanvasCont
                 Number(sliderAY.value ?? 0)/360*2*Math.PI,
                 Number(sliderAZ.value ?? 0)/360*2*Math.PI
             ),
-            coordinates: new Vector3(Number(sliderX.value ?? 0), Number(sliderY.value ?? 0), Number(sliderZ.value ?? 0)),
+            coordinates: new Vector3(Number(sliderX.value ?? 0), Number(sliderY.value ?? 0), 400),
             distance: Number(distanceSlider?.value ?? 1),
             size: Number(sliderSize?.value ?? 1),
             texturePath: "textures/grassblockAllSides.jpg"

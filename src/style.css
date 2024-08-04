@@ -28,9 +28,51 @@ a:hover {
 }
 
 h1 {
-  box-shadow: white 0 0 10px;
+  text-shadow: white 0 0 10px;
   width: 100%;
   text-align: center;
+}
+
+footer {
+  height: 120px;
+  width: 100%;
+  background: #191f28;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  color: #d5d5e8;
+  font-size: 14px;
+  box-shadow: #191f28 0 -10px 6px 10px;
+}
+
+footer>.foot-block {
+  width: 40%;
+}
+
+footer>.foot-block>h3 {
+  margin: 0;
+}
+
+footer>.foot-block>.foot-infos {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: calc(100% - 1.17rem - 9px);
+}
+
+
+footer>.foot-block>.foot-infos>* {
+  margin: 4px;
+}
+
+.foot-link {
+  display: flex;
+}
+
+.foot-link>.foot-icon {
+  width: 18px;
+  margin-right: 8px;
+  margin-left: -26px;
 }
 
 body {
@@ -55,10 +97,14 @@ h1 {
   display: flex;
   justify-content: space-evenly;
   flex-direction: row;
+  box-shadow: rgba(16,16,16, 0.2) -15px 15px 4px ;
+}
+#app>#app-program {
+  height: 600px;
 }
 
 #app>#app-program>#gpu-canvas {
-  box-shadow: white 0 0 10px ;
+  box-shadow: #191f28 0 0 6px ;
 }
 
 #app>#app-options {
@@ -71,13 +117,22 @@ h1 {
   justify-content: space-around;
 }
 
+input[type="range"] {
+  accent-color: rgb(22, 54, 80);
+  -webkit-appearance: none;
+    appearance: none;
+    background-color: rgb(98, 156, 201);
+    height: 16px;
+    border-radius: 8px;
+    outline: none;
+    transition: opacity 0.2s;
+}
+
 #app-options>.app-option {
+  width: 80%;
   margin: 10px auto;
-  display: grid;
-  grid-template:
-          [lab-left] "a a a a a a" 15px [lab-right]
-          [opt-left] "b b b b b c" 30px [opt-right]
-          / 200px 100px;
+  display: flex;
+  flex-direction: column;
   justify-items: start;
   justify-content: space-evenly;
   align-items: center;
@@ -85,68 +140,40 @@ h1 {
 }
 
 #app-options>.app-option>label {
-  grid-area: a;
 }
 
 #app-options>.app-option>input {
-  grid-area: b;
   width: 100%;
 }
 
 #app-options>.app-option>output {
-  grid-area: c;
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  align-content: center;
+  text-align: center;
+  color: #d5d5e8;
+  line-height: 5px;
+  font-size: 12px;
+  transform: translate(-15px, 140%);
+}
+
+#app-options>.app-option>output>span {
+  display: block;
   width: 100%;
+  height: 100%;
+  border-radius: 0 50% 50% 50%;
+  background: rgba(25, 31, 40, 0.8);
+  transform: rotate(45deg) translateX(-40%) translateY(-40%);
+  position: inherit;
+  z-index: -1;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vanilla:hover {
-  filter: drop-shadow(0 0 2em #3178c6aa);
+#app-options>.app-option>input + output {
+  display: none;
 }
 
-.card {
-  padding: 2em;
+#app-options>.app-option>input:active + output {
+  display: block;
 }
 
-.read-the-docs {
-  color: #888;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-}
