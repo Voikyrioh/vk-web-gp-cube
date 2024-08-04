@@ -4,12 +4,12 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Initiation à WebGPU</title>
+    <title>WebGP-Cube</title>
   </head>
   <body>
+    <h1>Voikyrioh's WebGP-Cube</h1>
     <div id="app">
       <div id="app-program">
-
       </div>
       <div id="app-options">
         <div class="app-option">
@@ -22,11 +22,13 @@
           <input id="y-slider" type="range" min="-300" max="300" step="1" value="0" oninput="document.getElementById('y-slider-out').textContent = event.target.value"/>
           <output id="y-slider-out">0</output>
         </div>
+        <!--
         <div class="app-option">
           <label for="z-slider">Z</label>
           <input id="z-slider" type="range" min="-400" max="400" step="1" value="0" oninput="document.getElementById('z-slider-out').textContent = event.target.value"/>
           <output id="z-slider-out">0</output>
         </div>
+        -->
         <div class="app-option">
           <label for="size-slider">Size</label>
           <input id="size-slider" type="range" min="1" max="400" step="1" value="100" oninput="document.getElementById('size-slider-out').textContent = event.target.value"/>
@@ -54,6 +56,8 @@
         </div>
       </div>
     </div>
+    <footer>
+    </footer>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
