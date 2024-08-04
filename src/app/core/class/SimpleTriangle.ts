@@ -35,4 +35,15 @@ export default class SimpleTriangle {
 
         return pointArray.map(c=> c.toArray()).flat() as number[];
     }
+
+    protected getTriangleZAverage(): number {
+        return (this.pointCoordinates.a.z + this.pointCoordinates.b.z + this.pointCoordinates.c.z) / 3;
+    }
+
+    public static sortTriangleByDepth(trianglesA : SimpleTriangle[], trianglesB : SimpleTriangle[]) : number {
+        const avgZA = trianglesA.map(triangle => triangle.getTriangleZAverage()).reduce((a, b) => a + b) / trianglesA.length;
+        const avgZB = trianglesB.map(triangle => triangle.getTriangleZAverage()).reduce((a, b) => a + b) / trianglesB.length;
+
+        return avgZA - avgZB;
+    }
 }

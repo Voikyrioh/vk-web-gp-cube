@@ -10,7 +10,14 @@ import shader from "../../shaders/basic.wgsl?raw"
 import {Cube} from "../core/class/Cube.ts";
 import Vector3 from "../core/class/Vector3.ts";
 
+async function loadImageBitmap(url: string) {
+    const res = await fetch(url);
+    const blob = await res.blob();
+    return createImageBitmap(blob, { colorSpaceConversion: 'none' });
+}
+
 export default async function drawCube(device: GPUDevice, context: GPUCanvasContext/*, x: number, y: number*/): Promise<void> {
+    const textureData = await loadImageBitmap('/textures/grass.png');
     return new Promise(resolve => {
         const sliderX = (document.getElementById('x-slider') as HTMLInputElement);
         const sliderY = (document.getElementById('y-slider') as HTMLInputElement);
@@ -21,6 +28,20 @@ export default async function drawCube(device: GPUDevice, context: GPUCanvasCont
         const sliderAZ = (document.getElementById('angle-z-slider') as HTMLInputElement);
         const distanceSlider = (document.getElementById('distance-slider') as HTMLInputElement);
 
+        const texture = device.createTexture({
+            label: '/textures/grass.png',
+            size: [64, 48],
+            format: 'rgba8unorm',
+            usage: GPUTextureUsage.TEXTURE_BINDING |
+                GPUTextureUsage.COPY_DST |
+                GPUTextureUsage.RENDER_ATTACHMENT,
+        });
+        device.queue.copyExternalImageToTexture(
+            { source: textureData, flipY: false },
+            { texture },
+            { width: textureData.width, height: textureData.height },
+        );
+
         const myCube = new Cube({
             angle: new Vector3(
                 Number(sliderAX.value ?? 0)/360*2*Math.PI,
@@ -29,7 +50,8 @@ export default async function drawCube(device: GPUDevice, context: GPUCanvasCont
             ),
             coordinates: new Vector3(Number(sliderX.value ?? 0), Number(sliderY.value ?? 0), Number(sliderZ.value ?? 0)),
             distance: Number(distanceSlider?.value ?? 1),
-            size: Number(sliderSize?.value ?? 1)
+            size: Number(sliderSize?.value ?? 1),
+            texturePath: "textures/grassblockAllSides.jpg"
         });
 
         const vertexes = new Float32Array(myCube.toVertexes());
@@ -38,6 +60,7 @@ export default async function drawCube(device: GPUDevice, context: GPUCanvasCont
             usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST
         });
         device.queue.writeBuffer(vertexBuffer, 0, vertexes);
+
 
         const shaderModule = device.createShaderModule({
             code: shader
@@ -49,13 +72,13 @@ export default async function drawCube(device: GPUDevice, context: GPUCanvasCont
                 module: shaderModule,
                 entryPoint: 'vertmain',
                 buffers: [{
-                    arrayStride: 24,
+                    arrayStride: 20,
                     attributes: [
                         {
                             shaderLocation: 0, offset: 0, format: "float32x3"
                         },
                         {
-                            shaderLocation: 1, offset: 12, format: "float32x3"
+                            shaderLocation: 1, offset: 12, format: "float32x2"
                         }
                     ]
                 }],
@@ -70,6 +93,16 @@ export default async function drawCube(device: GPUDevice, context: GPUCanvasCont
             }
         });
 
+        const sampler = device.createSampler();
+
+        const bindGroup = device.createBindGroup({
+            layout: pipeline.getBindGroupLayout(0),
+            entries: [
+                { binding: 0, resource: sampler },
+                { binding: 1, resource: texture.createView() },
+            ],
+        });
+
         const commandEncoder = device.createCommandEncoder();
         const passEncoder = commandEncoder.beginRenderPass({
             colorAttachments: [{
@@ -82,10 +115,12 @@ export default async function drawCube(device: GPUDevice, context: GPUCanvasCont
         passEncoder.setViewport(0,0,800,600, 0,1)
         passEncoder.setPipeline(pipeline);
         passEncoder.setVertexBuffer(0, vertexBuffer);
+        passEncoder.setBindGroup(0, bindGroup);
         passEncoder.draw( Cube.VertexesCount );
         passEncoder.end();
 
         const commandBuffer = commandEncoder.finish();
+
         device.queue.submit([commandBuffer]);
         resolve();
     });
