@@ -27,7 +27,7 @@ jobs:
           script: |
             cd ~/apps/vk-web-gp-cube
             git pull origin main
-            npm install --only=prod
+            npm i
             npm run build
             npm run preview --port 8080
             
