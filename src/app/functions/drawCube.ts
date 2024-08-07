@@ -17,7 +17,7 @@ async function loadImageBitmap(url: string) {
 }
 
 export default async function drawCube(device: GPUDevice, context: GPUCanvasContext/*, x: number, y: number*/): Promise<void> {
-    const textureData = await loadImageBitmap('/textures/grass.png');
+    const textureData = await loadImageBitmap('/textures/textureDefault.png');
     return new Promise(resolve => {
         const sliderX = (document.getElementById('x-slider') as HTMLInputElement);
         const sliderY = (document.getElementById('y-slider') as HTMLInputElement);
