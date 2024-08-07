@@ -30,7 +30,7 @@ jobs:
             mkdir web-gpcube-${{ github.event.release.tag_name }}/
             tar -xvzf ${{ github.event.release.tag_name }} -C web-gpcube-${{ github.event.release.tag_name }}/ --strip-components=1
             cd ./web-gpcube-${{ github.event.release.tag_name }}/
-            npm i --Prod
+            npm i --omit=dev
             npm run build-production
             cp -r dist/* /var/www/web-gpcube.voikyrioh.fr/
             cd ../
