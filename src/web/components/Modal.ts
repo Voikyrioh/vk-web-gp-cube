@@ -54,4 +54,5 @@ export class Modal {
 
         return button;
     }
+
 }
