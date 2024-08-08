@@ -11,6 +11,7 @@ import { Core } from './app';
 import { Defaults } from './constants';
 import drawCube from "./app/functions/drawCube.ts";
 import setupWebsiteScript from "./web/main.ts";
+import {Modal} from "./web/components";
 
 async function startProgram() {
     const app = document.querySelector('#app-program');
@@ -38,8 +39,11 @@ startProgram().catch((error: Error) => {
     console.trace(error);
     console.error(error.message);
     window.addEventListener('load', () => {
-        alert(`Impossible de lancer l'application, vérifiez que vous êtes bien sur une version du navigateur qui support web-GPU.`)
+        const modal = new Modal("Uh-oh !", "Impossible de lancer l'application, vérifiez que vous êtes bien sur une version du navigateur qui supporte web-GPU.", [Modal.closeButton('Fermer')]);
+        modal.open();
     })
 })
 
-window.addEventListener('load', () => {setupWebsiteScript();})
+window.addEventListener('load', () => {
+    setupWebsiteScript();
+})

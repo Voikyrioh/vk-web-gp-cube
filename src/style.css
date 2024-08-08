@@ -18,6 +18,7 @@
 
   --super-pink: 255, 191, 255;
   --neon-pink: 255, 230, 255;
+  --pink-accent: 230, 190, 230;
 
   --font-white: 213, 213, 232;
   --font-black: 25, 31, 40;
@@ -218,6 +219,96 @@ input[type="range"]:active + output {
 
 input[type="range"]:active::-webkit-slider-thumb {
   background-color: rgb(var(--accent-blue));
+}
+
+/* Modals */
+#modal-container {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+:root:has(.modal[open="true"]) {
+  overflow: hidden;
+}
+
+#modal-container>.modal {
+  display: none;
+}
+
+#modal-container>.modal[open="true"] {
+  display: flex;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50vh;
+  padding: 1rem;
+  z-index: 2;
+  width: 40rem;
+  min-height: 12rem;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: rgba(var(--neon-pink), 0.8);
+  box-shadow: rgb(var(--super-pink)) 0 0 12px ;
+}
+
+#modal-container>.modal>.modal-head {
+  padding: 0 0 1rem 2rem;
+  font-size: 1.6rem;
+  font-weight: 700;
+  border-bottom: 3px solid rgba(var(--neon-pink), 0.4);
+}
+
+#modal-container>.modal>.modal-body {
+  width: 100%;
+  margin-top: -2rem;
+  font-size: 1.2rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+#modal-container>.modal>.modal-footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+#modal-container>.modal>.modal-footer>button {
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: Montserrat, Arial, sans-serif;
+  background-color: rgba(var(--default-blue), 0.4);
+  box-shadow: rgba(var(--default-blue), 0.4) 0 0 6px ;
+  border-radius: 4px;
+  color: rgb(var(--font-white));
+  transition: cubic-bezier(0.50, -1.50, 0.50, 1.50) 0.3s;
+}
+
+#modal-container>.modal>.modal-footer>button:hover {
+  color: rgb(var(--font-white));
+  background-color: rgba(var(--accent-blue), 0.6);
+  box-shadow: rgba(var(--accent-blue), 0.4) 0 0 6px ;
+  transform: scale(1.1);
+  cursor: pointer;
+}
+
+#modal-background {
+  width: 0;
+  height: 0;
+}
+
+#modal-container:has(.modal[open="true"]) > #modal-background {
+  position: fixed;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  background: rgba(var(--font-black), 0.6);
+  backdrop-filter: blur(5px);
 }
 
 /* Liens */
