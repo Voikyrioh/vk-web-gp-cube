@@ -91,10 +91,10 @@ async function startProgram() {
 }
 
 async function changlogModal () {
-    const release: {name: string, title: string, created_at: Date, body: string} = await fetch(`https://api.github.com/repos/Voikyrioh/vk-web-gp-cube/releases/latest`).then(body => body.json());
+    const release: {name: string, title: string, created_at: Date, body: string, tag_name: string} = await fetch(`https://api.github.com/repos/Voikyrioh/vk-web-gp-cube/releases/latest`).then(body => body.json());
     const modal = new Modal({
-        title: `Changelog version ${release.name}`,
-        subtitle: new Date(release.created_at).toLocaleString(),
+        title: `${release.name}`,
+        subtitle: `${release.tag_name} - ${new Date(release.created_at).toLocaleString()}`,
         content: release.body,
         actions: [Modal.closeButton('Fermer')]
 });
@@ -108,8 +108,8 @@ window.addEventListener('load', () => {
     setupWebsiteScript();
     (document.getElementById('app-version') as HTMLParagraphElement).innerHTML =`Version de l'application: <b>v${__APP_VERSION__}</b>`;
     startProgram().catch((error: Error) => {
-    console.trace(error);
-    console.error(error.message);
+        console.trace(error);
+        console.error(error.message);
         const modal = new Modal({
             title: "Uh-oh !",
             content: "Impossible de lancer l'application, vérifiez que vous êtes bien sur une version du navigateur qui supporte web-GPU.",
