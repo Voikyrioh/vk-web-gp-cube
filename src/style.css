@@ -68,6 +68,9 @@ footer {
 }
 
 footer>.foot-block {
+  width: 20%;
+}
+footer>.foot-block + #footer-block-infos {
   width: 40%;
 }
 
@@ -234,11 +237,13 @@ input[type="range"]:active::-webkit-slider-thumb {
 
 #modal-container>.modal {
   display: none;
+  position: absolute;
+  top: 0;
+  transition: ease-in-out 0.3s;
 }
 
 #modal-container>.modal[open="true"] {
   display: flex;
-  position: absolute;
   transform: translate(-50%, -50%);
   top: 50vh;
   padding: 1rem;
@@ -256,6 +261,17 @@ input[type="range"]:active::-webkit-slider-thumb {
   font-size: 1.6rem;
   font-weight: 700;
   border-bottom: 3px solid rgba(var(--neon-pink), 0.4);
+  position: relative;
+}
+
+#modal-container>.modal>.modal-head>.modal-head-subtitle {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: rgba(var(--font-black), 0.4);
+  font-style: italic;
+  position: absolute;
+  transform: translateY(2.3rem);
+  left: 2rem;
 }
 
 #modal-container>.modal>.modal-body {
@@ -319,4 +335,5 @@ a {
 }
 a:hover {
   color: rgb(var(--neon-blue));
+  cursor: pointer;
 }

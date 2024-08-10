@@ -2,8 +2,9 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/svg+xml"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script type="module" src="/src/main.ts"></script>
     <title>WebGP-Cube</title>
   </head>
   <body>
@@ -64,20 +65,20 @@
         <h3>Liens</h3>
         <div class="foot-infos">
           <div class="foot-link">
-            <img src="/svg/github.svg" class="foot-icon"></img>
+            <img src="/svg/github.svg" alt="github icon" class="foot-icon"/>
             <a href="https://github.com/Voikyrioh/vk-web-gp-cube">Projet Github</a>
           </div>
           <div class="foot-link">
-            <img src="/svg/discord.svg" class="foot-icon"></img>
+            <img src="/svg/discord.svg" alt="discord icon" class="foot-icon"/>
             <a href="https://discord.gg/">Serveur discord</a>
           </div>
           <div class="foot-link">
-            <img src="/svg/email.svg" class="foot-icon"></img>
+            <img src="/svg/email.svg" alt="email icon" class="foot-icon"/>
             <a href="mailto:voikyrioh@gmail.com">addresse email</a>
           </div>
         </div>
       </div>
-      <div class="foot-block">
+      <div class="foot-block" id="footer-block-infos">
         <h3>Informations</h3>
         <div class="foot-infos">
           <span>
@@ -85,11 +86,20 @@
             <br>
             Il est nécessaire d'utiliser un navigateur dans sa version compatible avec WebGPU afin de faire fonctionner.
             <br>
-            Ceci est un projet personnel protégé par une liscense BSD-3, toute copie a but commercial ou d'appropriation est interdite.</span>
+            Ceci est un projet personnel protégé par une liscense BSD-3, toute copie a but commercial ou d'appropriation est interdite.
+          </span>
+        </div>
+      </div>
+      <div class="foot-block">
+        <h3>À propos</h3>
+        <div class="foot-infos">
+          <span id="app-version"></span>
+          <div class="foot-link">
+            <a onclick="changlogModal()">Voir le changelog</a>
+          </div>
         </div>
       </div>
     </footer>
-    <script type="module" src="/src/main.ts"></script>
   </body>
   <div id="modal-container">
     <div id="modal-background"></div>
