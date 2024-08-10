@@ -26,7 +26,7 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             cd ~/Apps/
-            wget https://api.github.com/repos/Voikyrioh/vk-web-gp-cube/tarball/${{ github.event.release.tag_name }}
+            wget https://api.github.com/repos/Voikyrioh/vk-web-gp-cube/tarball/refs/heads/${{ github.event.release.tag_name }}
             mkdir web-gpcube-${{ github.event.release.tag_name }}/
             tar -xvzf ${{ github.event.release.tag_name }} -C web-gpcube-${{ github.event.release.tag_name }}/ --strip-components=1
             cd ./web-gpcube-${{ github.event.release.tag_name }}/
