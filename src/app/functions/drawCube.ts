@@ -6,9 +6,13 @@ This source code is licensed under the BSD-style license found in the
 LICENSE file in the root directory of this source tree.
  */
 
-import shader from "../../shaders/basic.wgsl?raw"
+// @ts-ignore
+import shader from "../../shaders/basic.wgsl?raw";
 import {Cube} from "../core/class/Cube.ts";
 import Vector3 from "../core/class/Vector3.ts";
+import {Slider} from "../../web/components";
+
+export type NeccesarySliders = "sliderX" | "sliderY" | "sliderSize" | "sliderAngleX" | "sliderAngleY" | "sliderAngleZ";
 
 async function loadImageBitmap(url: string) {
     const res = await fetch(url);
@@ -16,17 +20,11 @@ async function loadImageBitmap(url: string) {
     return createImageBitmap(blob, { colorSpaceConversion: 'none' });
 }
 
-export default async function drawCube(device: GPUDevice, context: GPUCanvasContext/*, x: number, y: number*/): Promise<void> {
+export default async function drawCube(device: GPUDevice, context: GPUCanvasContext, sliders: Record<NeccesarySliders, Slider> ): Promise<void> {
     const textureData = await loadImageBitmap('/textures/textureDefault.png');
+    const {sliderX, sliderY, sliderSize, sliderAngleX, sliderAngleY, sliderAngleZ} = sliders;
+
     return new Promise(resolve => {
-        const sliderX = (document.getElementById('x-slider') as HTMLInputElement);
-        const sliderY = (document.getElementById('y-slider') as HTMLInputElement);
-        //const sliderZ = (document.getElementById('z-slider') as HTMLInputElement);
-        const sliderSize = (document.getElementById('size-slider') as HTMLInputElement);
-        const sliderAX = (document.getElementById('angle-x-slider') as HTMLInputElement);
-        const sliderAY = (document.getElementById('angle-y-slider') as HTMLInputElement);
-        const sliderAZ = (document.getElementById('angle-z-slider') as HTMLInputElement);
-        const distanceSlider = (document.getElementById('distance-slider') as HTMLInputElement);
 
         const texture = device.createTexture({
             label: '/textures/grass.png',
@@ -44,13 +42,13 @@ export default async function drawCube(device: GPUDevice, context: GPUCanvasCont
 
         const myCube = new Cube({
             angle: new Vector3(
-                Number(sliderAX.value ?? 0)/360*2*Math.PI,
-                Number(sliderAY.value ?? 0)/360*2*Math.PI,
-                Number(sliderAZ.value ?? 0)/360*2*Math.PI
+                sliderAngleX.value/360*2*Math.PI,
+               sliderAngleY.value/360*2*Math.PI,
+               sliderAngleZ.value/360*2*Math.PI
             ),
-            coordinates: new Vector3(Number(sliderX.value ?? 0), Number(sliderY.value ?? 0), 400),
-            distance: Number(distanceSlider?.value ?? 1),
-            size: Number(sliderSize?.value ?? 1),
+            coordinates: new Vector3(sliderX.value, sliderY.value, 400),
+            distance: 1,
+            size: sliderSize?.value,
             texturePath: "textures/grassblockAllSides.jpg"
         });
 
