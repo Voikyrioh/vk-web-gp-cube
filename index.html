@@ -2,8 +2,9 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/svg+xml"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script type="module" src="/src/main.ts"></script>
     <title>WebGP-Cube</title>
   </head>
   <body>
@@ -14,70 +15,27 @@
     <div id="app">
       <div id="app-program">
       </div>
-      <div id="app-options">
-        <div class="app-option">
-          <label for="x-slider">X</label>
-          <input id="x-slider" type="range" min="-400" max="400" step="1" value="0"/>
-          <output id="x-slider-out">0<span></span></output>
-        </div>
-        <div class="app-option">
-          <label for="y-slider">Y</label>
-          <input id="y-slider" type="range" min="-300" max="300" step="1" value="0" />
-          <output id="y-slider-out">0<span></span></output>
-        </div>
-        <!--
-        <div class="app-option">
-          <label for="z-slider">Z</label>
-          <input id="z-slider" type="range" min="-400" max="400" step="1" value="0" />
-          <output id="z-slider-out" hidden>0<span></span></output>
-        </div>
-        -->
-        <div class="app-option">
-          <label for="size-slider">Size</label>
-          <input id="size-slider" type="range" min="1" max="400" step="1" value="100" />
-          <output id="size-slider-out">0<span></span></output>
-        </div>
-        <div class="app-option">
-          <label for="angle-x-slider">Angle X</label>
-          <input id="angle-x-slider" type="range" min="-180" max="180" step="1" value="0" />
-          <output id="angle-x-slider-out">0<span></span></output>
-        </div>
-        <div class="app-option">
-          <label for="angle-y-slider">Angle Y</label>
-          <input id="angle-y-slider" type="range" min="-180" max="180" step="1" value="0" />
-          <output id="angle-y-slider-out">0<span></span></output>
-        </div>
-        <div class="app-option">
-          <label for="angle-z-slider">Angle Z</label>
-          <input id="angle-z-slider" type="range" min="-180" max="180" step="1" value="0" />
-          <output id="angle-z-slider-out">0<span></span></output>
-        </div>
-        <div class="app-option">
-          <label for="distance-slider">Distance</label>
-          <input id="distance-slider" type="range" min="0.01" max="1" step="0.01" value="0.51" />
-          <output id="distance-slider-out" >0<span></span>.51</output>
-        </div>
-      </div>
+      <div id="app-options"></div>
     </div>
     <footer>
       <div class="foot-block">
         <h3>Liens</h3>
         <div class="foot-infos">
           <div class="foot-link">
-            <img src="/svg/github.svg" class="foot-icon"></img>
+            <img src="/svg/github.svg" alt="github icon" class="foot-icon"/>
             <a href="https://github.com/Voikyrioh/vk-web-gp-cube">Projet Github</a>
           </div>
           <div class="foot-link">
-            <img src="/svg/discord.svg" class="foot-icon"></img>
+            <img src="/svg/discord.svg" alt="discord icon" class="foot-icon"/>
             <a href="https://discord.gg/">Serveur discord</a>
           </div>
           <div class="foot-link">
-            <img src="/svg/email.svg" class="foot-icon"></img>
+            <img src="/svg/email.svg" alt="email icon" class="foot-icon"/>
             <a href="mailto:voikyrioh@gmail.com">addresse email</a>
           </div>
         </div>
       </div>
-      <div class="foot-block">
+      <div class="foot-block" id="footer-block-infos">
         <h3>Informations</h3>
         <div class="foot-infos">
           <span>
@@ -85,11 +43,20 @@
             <br>
             Il est nécessaire d'utiliser un navigateur dans sa version compatible avec WebGPU afin de faire fonctionner.
             <br>
-            Ceci est un projet personnel protégé par une liscense BSD-3, toute copie a but commercial ou d'appropriation est interdite.</span>
+            Ceci est un projet personnel protégé par une liscense BSD-3, toute copie a but commercial ou d'appropriation est interdite.
+          </span>
+        </div>
+      </div>
+      <div class="foot-block">
+        <h3>À propos</h3>
+        <div class="foot-infos">
+          <span id="app-version"></span>
+          <div class="foot-link">
+            <a onclick="changlogModal()">Voir le changelog</a>
+          </div>
         </div>
       </div>
     </footer>
-    <script type="module" src="/src/main.ts"></script>
   </body>
   <div id="modal-container">
     <div id="modal-background"></div>

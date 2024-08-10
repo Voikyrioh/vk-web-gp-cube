@@ -2,24 +2,31 @@ export class Modal {
     readonly id : string;
     readonly modal : HTMLDivElement;
 
-    constructor(title: string, content: string, actions?: HTMLButtonElement[]) {
+    constructor(props: {title: string, subtitle?: string, content: string, actions?: HTMLButtonElement[]
+}) {
         this.id = `modal-${document.querySelectorAll('#modal-container>.modal').length}`;
         this.modal = document.createElement("div");
         this.modal.id = this.id;
         this.modal.classList.add("modal");
+        let subtitleBlock = '';
+
+        if (props.subtitle) {
+            subtitleBlock = `<span class="modal-head-subtitle">${props.subtitle}</span>`;
+        }
+
         this.modal.innerHTML = `
-          <div class="modal-head">${title}</div>
-          <div class="modal-body"><p>${content}</p></div>
+          <div class="modal-head">${props.title}${subtitleBlock}</div>
+          <div class="modal-body"><p>${props.content.replace('\n', '<br>')}</p></div>
           <div class="modal-footer"></div>
         `;
 
-        if (!actions) {
-            actions = [ this.getDefaultButton() ];
+        if (!props.actions) {
+            props.actions = [ this.getDefaultButton() ];
         }
 
-        this.setCloseButtonAction(actions);
+        this.setCloseButtonAction(props.actions);
 
-        actions.forEach(action => {
+        props.actions.forEach(action => {
             this.modal.getElementsByClassName('modal-footer')[0].appendChild(action);
         })
         document.getElementById('modal-container')?.appendChild(this.modal);
