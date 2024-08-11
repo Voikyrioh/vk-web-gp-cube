@@ -7,11 +7,11 @@
  */
 
 import './style.css';
-import { Core } from './app';
 import { Defaults } from './constants';
-import drawCube, {NeccesarySliders} from "./app/functions/drawCube.ts";
+import {NeccesarySliders} from "./app/functions/drawCube.ts";
 import setupWebsiteScript from "./web/main.ts";
 import {Modal, Slider} from "./web/components";
+import {MainProgram} from "./app/core/class/MainProgram.ts";
 
 const appSliders: Record<NeccesarySliders, Slider> = {
     'sliderX': new Slider({
@@ -80,14 +80,17 @@ async function startProgram() {
     } else {
         throw new Error('Could not create canvas context!');
     }
-
+    /*
     const gpuContext = await Core.initWebGPUContext(canvasContext);
 
     do {
         await Promise.all([
             new Promise(resolve => setTimeout(resolve, 1000/120)), // FORCE TO 60 FPS MAX
             await drawCube(gpuContext.device, gpuContext.canvas, appSliders)]) // DRAW FUNCTION #TODO: Rename
-    } while (true)
+    } while (true)*/
+    const program = new MainProgram({ canvas: canvasContext});
+            program.attachControls(appSliders);
+
 }
 
 async function changlogModal () {

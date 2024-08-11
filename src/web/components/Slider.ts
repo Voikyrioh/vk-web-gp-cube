@@ -49,6 +49,10 @@ export class Slider {
         return this.sliderBlock;
     }
 
+    public attach(callback: (val: number) => void) {
+        return this.sliderElement.addEventListener('input', () => callback(this.value));
+    }
+
     private generateLabel(): HTMLLabelElement {
         const label = document.createElement('label') as HTMLLabelElement;
         label.setAttribute('for', this.id);
