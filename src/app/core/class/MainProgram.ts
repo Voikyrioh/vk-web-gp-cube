@@ -3,7 +3,6 @@ import {GameMap} from "./Map.ts";
 // @ts-ignore
 import shader from "../../../shaders/basic.wgsl?raw";
 import {Cube} from "./Cube.ts";
-import {NeccesarySliders} from "../../functions/drawCube.ts";
 import {Slider} from "../../../web/components";
 
 interface MainProgramProperties {
@@ -149,7 +148,7 @@ export class MainProgram {
         this.running = false;
     }
 
-    public attachControls(appSliders: Record<NeccesarySliders, Slider>) {
+    public attachControls(appSliders: Record<string, Slider>) {
         this.map.attachControls({
             posX: appSliders.sliderX,
             posY: appSliders.sliderY,
