@@ -23,7 +23,7 @@ module.exports = {
             repo: 'https://Voikyrioh:' + process.env.GIT_TOKEN + '@github.com/Voikyrioh/vk-web-gp-cube.git',
             path: '/home/' + process.env.SERVER_USER + '/Apps/vk-web-gp-cube',
             'post-deploy':
-                'npm i --omit=dev && npm build-production && cp -r ./dist/* /var/www/web-gpcube.voikyrioh.fr/ && pm2 reload ecosystem.config.cjs --env production && pm2 save',
+                'npm i --omit=dev && npm run build-production && cp -r ./dist/* /var/www/web-gpcube.voikyrioh.fr/ && pm2 reload ecosystem.config.cjs --env production && pm2 save',
             env: {
                 NODE_ENV: 'production',
             },

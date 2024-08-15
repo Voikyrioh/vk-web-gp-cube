@@ -36,4 +36,4 @@ jobs:
 
       - name: Deploy with PM2
         run: |
-          env $(cat .env | grep -v \"#\" | xargs) pm2 deploy ecosystem.config.cjs staging
+          env $(cat .env | grep -v \"#\" | xargs) pm2 deploy ecosystem.config.cjs production
