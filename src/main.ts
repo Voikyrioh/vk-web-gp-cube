@@ -8,10 +8,10 @@
 
 import './style.css';
 import { Defaults } from './constants';
-import {NeccesarySliders} from "./app/functions/drawCube.ts";
+import { NeccesarySliders } from "./app/types";
 import setupWebsiteScript from "./web/main.ts";
-import {Modal, Slider} from "./web/components";
-import {MainProgram} from "./app/core/class/MainProgram.ts";
+import { Modal, Slider } from "./web/components";
+import { MainProgram } from "./app/core/class/MainProgram.ts";
 
 const appSliders: Record<NeccesarySliders, Slider> = {
     'sliderX': new Slider({
