@@ -3,8 +3,9 @@ name: CD
 
 # Controls when the action will run.
 on:
-  push:
-    branches:  [ main ]
+  release:
+    types:
+      - published
 
 jobs:
   deploy:
