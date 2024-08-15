@@ -32,6 +32,7 @@ jobs:
           echo SERVER_PORT=${{ secrets.PORT }} >> .env
           echo SERVER_IP=${{ secrets.HOST }} >> .env
           echo SERVER_USER=${{ secrets.USERNAME }} >> .env
+          echo GIT_TOKEN=${{ secrets.GIT_TOKEN }} >> .env
 
       - name: Deploy with PM2
         run: |

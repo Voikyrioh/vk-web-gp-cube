@@ -20,7 +20,7 @@ module.exports = {
             port: process.env.SERVER_PORT,
             key: 'deploy.key',
             ref: 'origin/main',
-            repo: 'https://github.com/Voikyrioh/vk-web-gp-cube/',
+            repo: 'https://Voikyrioh:' + process.env.GIT_TOKEN + '@github.com/Voikyrioh/vk-web-gp-cube.git',
             path: '/home/' + process.env.SERVER_USER + '/Apps/vk-web-gp-cube',
             'post-deploy':
                 'npm i --omit=dev && npm build-production && mv ./dist/* /var/www/webgp-cube.voikyrioh.fr/ && pm2 reload ecosystem.config.js --env production && pm2 save',
