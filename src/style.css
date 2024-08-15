@@ -333,6 +333,14 @@ input[type="range"]:active::-webkit-slider-thumb, input[type="range"]:active::-m
   cursor: pointer;
 }
 
+#modal-container>.modal>.modal-footer>button:active {
+  color: rgb(var(--font-white));
+  background-color: rgba(var(--accent-blue), 0.6);
+  box-shadow: rgba(var(--accent-blue), 0.4) 0 0 6px ;
+  transform: scale(0.95);
+  cursor: pointer;
+}
+
 #modal-background {
   width: 0;
   height: 0;

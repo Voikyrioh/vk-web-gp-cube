@@ -39,9 +39,9 @@ export class Slider {
         if (props.stopPoints) {
             this.sliderBlock.appendChild(this.generateDatalist(props.stopPoints));
         }
-        window.addEventListener('load', () => {
+        document.addEventListener('load', () => {
             this.setSliderStyle();
-        });
+        }, true);
         this.sliderElement.addEventListener('input', () => {this.value = Number(this.sliderElement.value) ?? 0})
     }
 
@@ -104,10 +104,8 @@ export class Slider {
         const valuePercent = (value + min  * -1 ) / ceil;
         const thumbOffset = valuePercent * -28 + 14;
         const percentOffset =  thumbOffset / this.sliderElement.offsetWidth * 100
-        const barLeftPix = this.sliderElement.offsetLeft + (this.sliderElement.offsetWidth * valuePercent) + thumbOffset;
         const indicator = document.getElementById(`output-${this.id}`) as HTMLOutputElement;
-        indicator.style.left = `${barLeftPix}px`;
-        indicator.innerHTML = `${value}<span></span>`;
+
         const finalPercent = valuePercent*100+percentOffset
 
         let bgStyle;
@@ -137,6 +135,10 @@ export class Slider {
             background-clip: padding-box;
         }
         `;
+
+        const barLeftPix = this.sliderElement.offsetLeft + (this.sliderElement.offsetWidth * valuePercent) + thumbOffset;
+        indicator.innerHTML = `${value}<span></span>`;
+        indicator.style.left = `${barLeftPix}px`;
     }
 
 }
