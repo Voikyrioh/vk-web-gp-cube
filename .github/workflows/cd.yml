@@ -3,36 +3,36 @@ name: CD
 
 # Controls when the action will run.
 on:
-  # Triggers the workflow on push or pull request events but only for the master branch
-  release:
-    types:
-      - published
+  push:
+    branches:  [ main ]
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  deploy:
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - name: Deploy using ssh
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.PRIVATE_KEY }}
-          port: ${{ secrets.PORT }}
-          script: |
-            cd ~/Apps/
-            wget https://api.github.com/repos/Voikyrioh/vk-web-gp-cube/tarball/refs/heads/${{ github.event.release.tag_name }}
-            mkdir web-gpcube-${{ github.event.release.tag_name }}/
-            tar -xvzf ${{ github.event.release.tag_name }} -C web-gpcube-${{ github.event.release.tag_name }}/ --strip-components=1
-            cd ./web-gpcube-${{ github.event.release.tag_name }}/
-            npm i --omit=dev
-            npm run build-production
-            cp -r dist/* /var/www/web-gpcube.voikyrioh.fr/
-            cd ../
-            rm -r ./web-gpcube-${{ github.event.release.tag_name }}
-            rm ./${{ github.event.release.tag_name }}
+      - name: Set up SSH
+        uses: actions/checkout@v2
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$SSH_PRIVATE_KEY" > ./deploy.key
+          sudo chmod 600 ./deploy.key
+          echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+        shell: bash
+        env:
+          SSH_PRIVATE_KEY: ${{secrets.PRIVATE_KEY}}
+          SSH_KNOWN_HOSTS: ${{secrets.HOST}}
+
+      - name: Install PM2 locally
+        run: |
+          npm i -g pm2
+
+      - name: Create env file
+        run: |
+          touch .env
+          echo SERVER_PORT=${{ secrets.PORT }} >> .env
+          echo SERVER_IP=${{ secrets.HOST }} >> .env
+          echo SERVER_USER=${{ secrets.USERNAME }} >> .env
+
+      - name: Deploy with PM2
+        run: |
+          env $(cat .env | grep -v \"#\" | xargs) pm2 deploy ecosystem.config.js staging
