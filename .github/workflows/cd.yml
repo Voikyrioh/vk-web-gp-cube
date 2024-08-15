@@ -35,4 +35,5 @@ jobs:
 
       - name: Deploy with PM2
         run: |
+          ls
           env $(cat .env | grep -v \"#\" | xargs) pm2 deploy ecosystem.config.js staging
