@@ -7,66 +7,12 @@
  */
 
 import './style.css';
-import { Core } from './app';
 import { Defaults } from './constants';
-import drawCube, {NeccesarySliders} from "./app/functions/drawCube.ts";
+import { NeccesarySliders } from "./app/types";
 import setupWebsiteScript from "./web/main.ts";
-import {Modal, Slider} from "./web/components";
+import { Modal, Slider } from "./web/components";
+import { MainProgram } from "./app/core/class/MainProgram.ts";
 
-const appSliders: Record<NeccesarySliders, Slider> = {
-    'sliderX': new Slider({
-        defaultValue: 0,
-        max: Defaults.adaptatorWidth / 2,
-        min: Defaults.adaptatorWidth / 2 * -1,
-        name: "X",
-        step: 1,
-        stopPoints: [0]
-    }),
-    'sliderY': new Slider({
-        defaultValue: 0,
-        max: Defaults.adaptatorHeight / 2,
-        min: Defaults.adaptatorHeight / 2 * -1,
-        name: "Y",
-        step: 1,
-        stopPoints: [0]
-    }),
-    'sliderSize': new Slider({
-        defaultValue: Defaults.adaptatorWidth / 8,
-        max: Defaults.adaptatorWidth / 2,
-        min: 0,
-        name: "Size",
-        step: 1,
-        stopPoints: [Defaults.adaptatorWidth / 8, Defaults.adaptatorWidth / 4, 300]
-    }),
-    'sliderAngleX': new Slider({
-        defaultValue: 0,
-        max: 180,
-        min: -180,
-        name: "Angle X",
-        step: 1,
-        stopPoints: [-180, -90, -45, 0, 45, 90, 180]
-    }),
-    'sliderAngleY': new Slider({
-        defaultValue: 0,
-        max: 180,
-        min: -180,
-        name: "Angle Y",
-        step: 1,
-        stopPoints: [-180, -90, -45, 0, 45, 90, 180]
-    }),
-    'sliderAngleZ': new Slider({
-        defaultValue: 0,
-        max: 180,
-        min: -180,
-        name: "Angle Z",
-        step: 1,
-        stopPoints: [-180, -90, -45, 0, 45, 90, 180]
-    })
-};
-
-for (const slider in appSliders) {
-    document.getElementById("app-options")!.appendChild((appSliders[slider as NeccesarySliders]).getBlockElement());
-}
 
 async function startProgram() {
     const app = document.querySelector('#app-program');
@@ -81,13 +27,71 @@ async function startProgram() {
         throw new Error('Could not create canvas context!');
     }
 
+    const appSliders: Record<NeccesarySliders, Slider> = {
+        'sliderX': new Slider({
+            defaultValue: 0,
+            max: Defaults.adaptatorWidth / 2,
+            min: Defaults.adaptatorWidth / 2 * -1,
+            name: "X",
+            step: 1,
+            stopPoints: [0]
+        }),
+        'sliderY': new Slider({
+            defaultValue: 0,
+            max: Defaults.adaptatorHeight / 2,
+            min: Defaults.adaptatorHeight / 2 * -1,
+            name: "Y",
+            step: 1,
+            stopPoints: [0]
+        }),
+        'sliderSize': new Slider({
+            defaultValue: Defaults.adaptatorWidth / 8,
+            max: Defaults.adaptatorWidth / 2,
+            min: 0,
+            name: "Size",
+            step: 1,
+            stopPoints: [Defaults.adaptatorWidth / 8, Defaults.adaptatorWidth / 4, 300]
+        }),
+        'sliderAngleX': new Slider({
+            defaultValue: 0,
+            max: 180,
+            min: -180,
+            name: "Angle X",
+            step: 1,
+            stopPoints: [-180, -90, -45, 0, 45, 90, 180]
+        }),
+        'sliderAngleY': new Slider({
+            defaultValue: 0,
+            max: 180,
+            min: -180,
+            name: "Angle Y",
+            step: 1,
+            stopPoints: [-180, -90, -45, 0, 45, 90, 180]
+        }),
+        'sliderAngleZ': new Slider({
+            defaultValue: 0,
+            max: 180,
+            min: -180,
+            name: "Angle Z",
+            step: 1,
+            stopPoints: [-180, -90, -45, 0, 45, 90, 180]
+        })
+    };
+
+    for (const slider in appSliders) {
+        document.getElementById("app-options")!.appendChild((appSliders[slider as NeccesarySliders]).getBlockElement());
+    }
+    /*
     const gpuContext = await Core.initWebGPUContext(canvasContext);
 
     do {
         await Promise.all([
             new Promise(resolve => setTimeout(resolve, 1000/120)), // FORCE TO 60 FPS MAX
             await drawCube(gpuContext.device, gpuContext.canvas, appSliders)]) // DRAW FUNCTION #TODO: Rename
-    } while (true)
+    } while (true)*/
+    const program = new MainProgram({ canvas: canvasContext});
+            program.attachControls(appSliders);
+
 }
 
 async function changlogModal () {

@@ -75,36 +75,38 @@ export class Cube {
 
     texture: Promise<HTMLImageElement>;
     coordinates: Vector3;
+    angle: Vector3;
     size: number;
     cubePosition: CubeFaceVertexes = Cube.Vertexes;
     sides!: Record<Sides, [SimpleTriangle, SimpleTriangle]>;
     private distance: number = 0;
     private vertexCoeff: number;
 
-    private generateSides(angle: Vector3) {
+    private generateSides() {
         const generateSides = [ Sides.FACE, Sides.BOTTOM, Sides.RIGHT, Sides.LEFT, Sides.TOP, Sides.BACK];
         this.distance;
+        this.vertexCoeff = Math.sqrt(Math.pow(this.size/2, 2) + Math.pow(this.size/2, 2));
         this.sides = Object.fromEntries(
             generateSides.map(s => [
                     s,
                     [
                         new SimpleTriangle({
-                            a: Vector3.fromArray(angle.toArray()),
+                            a: Vector3.fromArray(this.angle.toArray()),
                             coords: this.cubePosition
                                 .slice(0,3)
                                 .map(point => Vector3.fromArray(point))
                                 .map(Cube.CubeFaceRotations[s])
-                                .map((vector: Vector3) => Vector3.computeCoordinatesRotation(vector,Vector3.fromArray(angle.toArray())))
+                                .map((vector: Vector3) => Vector3.computeCoordinatesRotation(vector,Vector3.fromArray(this.angle.toArray())))
                                 .map((vec) => Vector3.fromArray([vec.x*this.vertexCoeff/adaptatorWidth,vec.y*this.vertexCoeff/adaptatorHeight,vec.z*this.vertexCoeff/adaptatorWidth]))
                                 .map((val) => Cube.translateVertexes(val, this.coordinates)) as TriangleVertexes
                         }),
                         new SimpleTriangle({
-                            a: Vector3.fromArray(angle.toArray()),
+                            a: Vector3.fromArray(this.angle.toArray()),
                             coords: this.cubePosition
                                 .slice(3)
                                 .map(point => Vector3.fromArray(point))
                                 .map(Cube.CubeFaceRotations[s])
-                                .map((vector: Vector3) => Vector3.computeCoordinatesRotation(vector,Vector3.fromArray(angle.toArray())))
+                                .map((vector: Vector3) => Vector3.computeCoordinatesRotation(vector,Vector3.fromArray(this.angle.toArray())))
                                 .map((vec) => Vector3.fromArray([vec.x*this.vertexCoeff/adaptatorWidth,vec.y*this.vertexCoeff/adaptatorHeight,vec.z*this.vertexCoeff/adaptatorWidth]))
                                 .map((val) => Cube.translateVertexes(val, this.coordinates)) as TriangleVertexes
                         })
@@ -124,7 +126,8 @@ export class Cube {
         })
         this.vertexCoeff = Math.sqrt(Math.pow(this.size/2, 2) + Math.pow(this.size/2, 2));
         this.distance = props.distance;
-        this.generateSides(props.angle);
+        this.angle = props.angle;
+        this.generateSides();
     }
 
     public getCubeTexture(): Promise<HTMLImageElement> {
@@ -132,6 +135,7 @@ export class Cube {
     }
 
     toVertexes(): number[] {
+        this.generateSides();
         return Object.entries(this.sides)
             .sort(([,trianglesA], [,trianglesB]) => SimpleTriangle.sortTriangleByDepth(trianglesA, trianglesB))
             .map(([key, value]) =>

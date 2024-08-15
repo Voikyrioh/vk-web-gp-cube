@@ -16,7 +16,7 @@ export class Modal {
 
         this.modal.innerHTML = `
           <div class="modal-head">${props.title}${subtitleBlock}</div>
-          <div class="modal-body"><p>${props.content.replace('\n', '<br>')}</p></div>
+          <div class="modal-body"><p>${props.content.replaceAll('\n', '<br>')}</p></div>
           <div class="modal-footer"></div>
         `;
 
