@@ -45,10 +45,6 @@ export default class Vector3 {
         return this;
     }
 
-    public toString(): string {
-        return `Vector (x: ${this.x}, y: ${this.y}, z: ${this.z});`;
-    }
-
     static fromArray(array: PointVertexes): Vector3 {
         return new this(...array);
     }
@@ -124,6 +120,10 @@ export default class Vector3 {
         );
 
         return newCoords;
+    }
+
+    public toString(): string {
+        return `${this.x},${this.y},${this.z}`;
     }
 
 }

@@ -13,30 +13,57 @@ interface controllerAssign {
     rotateZ?: Slider
 }
 
-export class GameMap {
-    public cube: Cube;
+export class Chunk {
+    private static TableInit: number [][] = Array(16).fill(Array(16));
+    private static MaxSize: Vector3 = new Vector3(16,4,16);
     private pos: Vector3 = Vector3.fromArray([0,0,400])
+    private size = 50;
     private rotations: Vector3 = Vector3.fromArray([45,45,0])
     private distance: number = 200;
+    chunk: Record<string, Cube>;
 
-    constructor() {
-        this.cube = new Cube({
-            angle: new Vector3(
-                this.rotations.x/360*2*Math.PI,
-                this.rotations.y/360*2*Math.PI,
-                this.rotations.z/360*2*Math.PI
-            ),
-            coordinates: this.pos,
-            distance: 1,
-            size: this.distance,
-            texturePath: "textures/grassblockAllSides.jpg"
-        });
+    constructor(position: Vector3) {
+        this.chunk = {};
+        this.generateChunk(position);
     }
 
-    public draw() {
-        this.cube.coordinates = this.pos;
+    private generateChunk(position: Vector3) {
+        const chunkBuffer = Chunk.TableInit;
+        for (let x = 0; x < Chunk.MaxSize.x; x++) {
+            for(let y = 0; y < Chunk.MaxSize.y; y++) {
+                for(let z = 0; z < Chunk.MaxSize.z; z++) {
+                    const blockPos = new Vector3(
+                        position.x + (x - Chunk.MaxSize.x/2) * this.size, 
+                        position.y + (y - Chunk.MaxSize.y/2) * this.size, 
+                        position.z + (z - Chunk.MaxSize.z/2) * this.size
+                    );
+
+                    this.chunk[blockPos.toString()] = new Cube({
+                        angle: new Vector3(
+                            0,//this.rotations.x/360*2*Math.PI,
+                            0,//this.rotations.y/360*2*Math.PI,
+                            0,//this.rotations.z/360*2*Math.PI
+                        ),
+                        coordinates: blockPos,
+                        distance: 1,
+                        size: this.size,
+                        texturePath: "textures/grassblockAllSides.jpg"
+                    });
+                }
+            }
+        }
+    }
+
+    public draw(): number[][] {
+        /*this.cube.coordinates = this.pos;
         this.cube.size = this.distance;
-        this.cube.angle = this.rotations;
+        this.cube.angle = this.rotations;*/
+        const blockVertexes: number[][] = []
+        for(const block in this.chunk) {
+            blockVertexes.push(this.chunk[block].toVertexes())
+        }
+
+        return blockVertexes;
     }
 
     public attachControls(controllers: controllerAssign) {

@@ -1,9 +1,10 @@
 import {initWebGPUContext} from "../utils.ts";
-import {GameMap} from "./Map.ts";
+import {Chunk} from "./Map.ts";
 // @ts-ignore
 import shader from "../../../shaders/basic.wgsl?raw";
 import {Cube} from "./Cube.ts";
 import {Slider} from "../../../web/components";
+import Vector3 from "./Vector3.ts";
 
 interface MainProgramProperties {
     canvas: HTMLCanvasElement;
@@ -15,12 +16,12 @@ export class MainProgram {
     private _pipeline!: GPURenderPipeline;
     private _bindGroup!: GPUBindGroup;
     private running: boolean = true;
-    private map: GameMap;
+    private map: Chunk;
     public GameInitStatus: Promise<boolean>;
 
 
     constructor(prop: MainProgramProperties) {
-        this.map = new GameMap();
+        this.map = new Chunk(new Vector3(0,-300,0));
         this.GameInitStatus = initWebGPUContext(prop.canvas).then(async ctx => {
             this._canvas = ctx.canvas;
             this._device = ctx.device;
@@ -83,7 +84,7 @@ export class MainProgram {
     }
 
     private async loadtexture(): Promise<GPUTexture> {
-        const textureData = await this.loadImageBitmap('/textures/textureDefault.png');
+        const textureData = await this.loadImageBitmap('/textures/grass.png');
         const texture = this._device.createTexture({
             label: '/textures/grass.png',
             size: [64, 48],
@@ -115,8 +116,8 @@ export class MainProgram {
     }
 
     private async draw() {
-        this.map.draw();
-        const vertexes = new Float32Array(this.map.cube.toVertexes());
+        const chunk: number[][] = this.map.draw();
+        const vertexes = new Float32Array(chunk.flat());
         const vertexBuffer = this._device.createBuffer({
             size: vertexes.byteLength,
             usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST
@@ -136,7 +137,7 @@ export class MainProgram {
         passEncoder.setPipeline(this._pipeline);
         passEncoder.setVertexBuffer(0, vertexBuffer);
         passEncoder.setBindGroup(0, this._bindGroup);
-        passEncoder.draw( Cube.VertexesCount );
+        passEncoder.draw( chunk.length * Cube.VertexesCount );
         passEncoder.end();
 
         const commandBuffer = commandEncoder.finish();
