@@ -81,14 +81,7 @@ async function startProgram() {
     for (const slider in appSliders) {
         document.getElementById("app-options")!.appendChild((appSliders[slider as NeccesarySliders]).getBlockElement());
     }
-    /*
-    const gpuContext = await Core.initWebGPUContext(canvasContext);
 
-    do {
-        await Promise.all([
-            new Promise(resolve => setTimeout(resolve, 1000/120)), // FORCE TO 60 FPS MAX
-            await drawCube(gpuContext.device, gpuContext.canvas, appSliders)]) // DRAW FUNCTION #TODO: Rename
-    } while (true)*/
     const program = new MainProgram({ canvas: canvasContext});
             program.attachControls(appSliders);
 

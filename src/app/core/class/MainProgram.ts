@@ -1,3 +1,11 @@
+/*
+Copyright (c) 2024, Yoann Pommier
+All rights reserved.
+
+This source code is licensed under the BSD-style license found in the
+LICENSE file in the root directory of this source tree.
+ */
+
 import {initWebGPUContext} from "../utils.ts";
 import {Chunk} from "./Map.ts";
 // @ts-ignore
@@ -5,6 +13,7 @@ import shader from "../../../shaders/basic.wgsl?raw";
 import {Cube} from "./Cube.ts";
 import {Slider} from "../../../web/components";
 import Vector3 from "./Vector3.ts";
+import {VecMatrix} from "./VecMatrix.ts";
 
 interface MainProgramProperties {
     canvas: HTMLCanvasElement;
@@ -18,6 +27,8 @@ export class MainProgram {
     private running: boolean = true;
     private map: Chunk;
     public GameInitStatus: Promise<boolean>;
+    private _uniformBuffer!: GPUBuffer;
+    private _uniformGroup!: GPUBindGroup;
 
 
     constructor(prop: MainProgramProperties) {
@@ -46,6 +57,7 @@ export class MainProgram {
         })
 
         this._pipeline = this._device.createRenderPipeline({
+            label: "cubes",
             layout: "auto",
             vertex: {
                 module: shaderModule,
@@ -60,7 +72,7 @@ export class MainProgram {
                             shaderLocation: 1, offset: 12, format: "float32x2"
                         }
                     ]
-                }],
+                },],
             },
             fragment: {
                 module: shaderModule,
@@ -74,8 +86,26 @@ export class MainProgram {
 
         const sampler = this._device.createSampler();
 
-        this._bindGroup = this._device.createBindGroup({
+        this._uniformBuffer = this._device.createBuffer({
+            label: 'uniform',
+            size: 12*4,
+            usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+        });
+
+        const rotationMatrix = new Float32Array(VecMatrix.addVertexFloat32Padding(VecMatrix.getRotationMatrice(this.map.rotations, this.map.pos)));
+        this._device.queue.writeBuffer(this._uniformBuffer, 0, rotationMatrix);
+
+        this._uniformGroup = this._device.createBindGroup({
+            label: 'Uniforms',
             layout: this._pipeline.getBindGroupLayout(0),
+            entries: [
+                { binding: 0, resource: {buffer: this._uniformBuffer} },
+            ],
+        });
+
+        this._bindGroup = this._device.createBindGroup({
+            label: 'textures',
+            layout: this._pipeline.getBindGroupLayout(1),
             entries: [
                 { binding: 0, resource: sampler },
                 { binding: 1, resource: texture.createView() },
@@ -124,6 +154,9 @@ export class MainProgram {
         });
         this._device.queue.writeBuffer(vertexBuffer, 0, vertexes);
 
+        const rotationMatrix = new Float32Array(VecMatrix.addVertexFloat32Padding(VecMatrix.getRotationMatrice(this.map.rotations, this.map.pos)));
+        this._device.queue.writeBuffer(this._uniformBuffer, 0, rotationMatrix);
+
         const commandEncoder = this._device.createCommandEncoder();
         const passEncoder = commandEncoder.beginRenderPass({
             colorAttachments: [{
@@ -136,7 +169,8 @@ export class MainProgram {
         passEncoder.setViewport(0,0,800,600, 0,1)
         passEncoder.setPipeline(this._pipeline);
         passEncoder.setVertexBuffer(0, vertexBuffer);
-        passEncoder.setBindGroup(0, this._bindGroup);
+        passEncoder.setBindGroup(0, this._uniformGroup);
+        passEncoder.setBindGroup(1, this._bindGroup);
         passEncoder.draw( chunk.length * Cube.VertexesCount );
         passEncoder.end();
 

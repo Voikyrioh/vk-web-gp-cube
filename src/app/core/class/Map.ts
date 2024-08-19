@@ -1,3 +1,11 @@
+/*
+Copyright (c) 2024, Yoann Pommier
+All rights reserved.
+
+This source code is licensed under the BSD-style license found in the
+LICENSE file in the root directory of this source tree.
+ */
+
 import {Cube} from "./Cube.ts";
 import Vector3 from "./Vector3.ts";
 import {Slider} from "../../../web/components";
@@ -16,9 +24,9 @@ interface controllerAssign {
 export class Chunk {
     private static TableInit: number [][] = Array(16).fill(Array(16));
     private static MaxSize: Vector3 = new Vector3(16,4,16);
-    private pos: Vector3 = Vector3.fromArray([0,0,400])
+    public pos: Vector3 = Vector3.fromArray([0,0,1])
     private size = 50;
-    private rotations: Vector3 = Vector3.fromArray([45,45,0])
+    public rotations: Vector3 = Vector3.fromArray([0,0,0])
     private distance: number = 200;
     chunk: Record<string, Cube>;
 
@@ -33,8 +41,8 @@ export class Chunk {
             for(let y = 0; y < Chunk.MaxSize.y; y++) {
                 for(let z = 0; z < Chunk.MaxSize.z; z++) {
                     const blockPos = new Vector3(
-                        position.x + (x - Chunk.MaxSize.x/2) * this.size, 
-                        position.y + (y - Chunk.MaxSize.y/2) * this.size, 
+                        position.x + (x - Chunk.MaxSize.x/2) * this.size,
+                        position.y + (y - Chunk.MaxSize.y/2) * this.size,
                         position.z + (z - Chunk.MaxSize.z/2) * this.size
                     );
 
@@ -67,9 +75,9 @@ export class Chunk {
     }
 
     public attachControls(controllers: controllerAssign) {
-        controllers.posX?.attach((value) => { console.log(value); this.pos.x = value})
-        controllers.posY?.attach((value) => {this.pos.y = value})
-        controllers.posZ?.attach((value) => {this.pos.z = value})
+        controllers.posX?.attach((value) => { this.pos.x = value/800})
+        controllers.posY?.attach((value) => {this.pos.y = value/600})
+        controllers.posZ?.attach((value) => {this.pos.z = value/800})
         controllers.rotateX?.attach((value) => {this.rotations.x = value/360*2*Math.PI})
         controllers.rotateY?.attach((value) => {this.rotations.y = value/360*2*Math.PI})
         controllers.rotateZ?.attach((value) => {this.rotations.z = value/360*2*Math.PI})
