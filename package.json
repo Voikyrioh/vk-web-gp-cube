@@ -7,10 +7,16 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "build-production": "npx vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "mocha --require ts-node/register "
   },
   "devDependencies": {
+    "@types/chai": "^4.3.17",
+    "@types/mocha": "^10.0.7",
     "@webgpu/types": "^0.1.44",
+    "chai": "^5.1.1",
+    "mocha": "^10.7.3",
+    "ts-node": "^10.9.2",
     "typescript": "^5.2.2",
     "vite": "^5.3.4"
   }
