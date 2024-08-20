@@ -22,12 +22,12 @@ interface controllerAssign {
 }
 
 export class Chunk {
-    private static TableInit: number [][] = Array(16).fill(Array(16));
+    //private static TableInit: number [][] = Array(16).fill(Array(16));
     private static MaxSize: Vector3 = new Vector3(16,4,16);
     public pos: Vector3 = Vector3.fromArray([0,0,1])
     private size = 50;
     public rotations: Vector3 = Vector3.fromArray([0,0,0])
-    private distance: number = 200;
+    //private distance: number = 200;
     chunk: Record<string, Cube>;
 
     constructor(position: Vector3) {
@@ -36,7 +36,7 @@ export class Chunk {
     }
 
     private generateChunk(position: Vector3) {
-        const chunkBuffer = Chunk.TableInit;
+        //const chunkBuffer = Chunk.TableInit;
         for (let x = 0; x < Chunk.MaxSize.x; x++) {
             for(let y = 0; y < Chunk.MaxSize.y; y++) {
                 for(let z = 0; z < Chunk.MaxSize.z; z++) {
@@ -81,6 +81,6 @@ export class Chunk {
         controllers.rotateX?.attach((value) => {this.rotations.x = value/360*2*Math.PI})
         controllers.rotateY?.attach((value) => {this.rotations.y = value/360*2*Math.PI})
         controllers.rotateZ?.attach((value) => {this.rotations.z = value/360*2*Math.PI})
-        controllers.distance?.attach((value) => {this.distance = value})
+        //controllers.distance?.attach((value) => {this.distance = value})
     }
 }
