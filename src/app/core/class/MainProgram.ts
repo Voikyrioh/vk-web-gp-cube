@@ -29,6 +29,7 @@ export class MainProgram {
     public GameInitStatus: Promise<boolean>;
     private _uniformBuffer!: GPUBuffer;
     private _uniformGroup!: GPUBindGroup;
+    public framerate!: number | null;
 
 
     constructor(prop: MainProgramProperties) {
@@ -137,15 +138,23 @@ export class MainProgram {
         this.setupShaders(texture);
 
         // MainLoop
-        while (this.running) {
-            await Promise.all([
-                this.draw(),
-                new Promise(resolve => setTimeout(resolve, 1000/120))
-            ]);
+        requestAnimationFrame((timestamp) => {
+            this.draw(timestamp);
+            this.mainLoop(timestamp);
+        })
+    }
+
+    private mainLoop(lastTimeStamp: number): void {
+        if (this.running) {
+            requestAnimationFrame(async (timestamp) => {
+                this.computeFrameRate(timestamp, lastTimeStamp);
+                await this.draw(timestamp - lastTimeStamp);
+                this.mainLoop(timestamp);
+            })
         }
     }
 
-    private async draw() {
+    private async draw(time: number): Promise<void> {
         const chunk: number[][] = this.map.draw();
         const vertexes = new Float32Array(chunk.flat());
         const vertexBuffer = this._device.createBuffer({
@@ -192,5 +201,9 @@ export class MainProgram {
             rotateZ: appSliders.sliderAngleZ,
             distance: appSliders.sliderSize,
         })
+    }
+
+    private computeFrameRate(timestamp: number, lastTimeStamp: number) {
+        this.framerate = Math.floor(1/((timestamp - lastTimeStamp) / 1000));
     }
 }

@@ -85,6 +85,13 @@ async function startProgram() {
     const program = new MainProgram({ canvas: canvasContext});
             program.attachControls(appSliders);
 
+    updateFPSIndicator(program);
+}
+
+function updateFPSIndicator(program: MainProgram) {
+    const fpsIndicator = document.querySelector("#fps-indicator>b");
+    if(fpsIndicator) fpsIndicator.textContent = program.framerate?.toString(10);
+    requestAnimationFrame(() => {updateFPSIndicator(program)})
 }
 
 async function changlogModal () {
