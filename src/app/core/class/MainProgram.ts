@@ -92,7 +92,7 @@ export class MainProgram {
             usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
         });
 
-        const rotationMatrix = new Float32Array(VecMatrix.addVertexFloat32Padding(VecMatrix.getRotationMatrice(this.map.rotations, this.map.pos)));
+        const rotationMatrix = new Float32Array(VecMatrix.addVertexFloat32Padding(VecMatrix.getRotationMatrice(this.map.rotations)));
         this._device.queue.writeBuffer(this._uniformBuffer, 0, rotationMatrix);
 
         this._uniformGroup = this._device.createBindGroup({
@@ -154,7 +154,7 @@ export class MainProgram {
         });
         this._device.queue.writeBuffer(vertexBuffer, 0, vertexes);
 
-        const rotationMatrix = new Float32Array(VecMatrix.addVertexFloat32Padding(VecMatrix.getRotationMatrice(this.map.rotations, this.map.pos)));
+        const rotationMatrix = new Float32Array(VecMatrix.addVertexFloat32Padding(VecMatrix.getRotationMatrice(this.map.rotations)));
         this._device.queue.writeBuffer(this._uniformBuffer, 0, rotationMatrix);
 
         const commandEncoder = this._device.createCommandEncoder();
