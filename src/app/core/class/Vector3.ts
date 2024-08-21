@@ -45,6 +45,14 @@ export default class Vector3 {
         return this;
     }
 
+    public divide(vector: Vector3): Vector3 {
+        this.x /= vector.x;
+        this.y /= vector.y;
+        this.z /= vector.z;
+
+        return this;
+    }
+
     static fromArray(array: PointVertexes): Vector3 {
         return new this(...array);
     }

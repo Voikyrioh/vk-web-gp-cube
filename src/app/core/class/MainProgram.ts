@@ -33,7 +33,7 @@ export class MainProgram {
 
 
     constructor(prop: MainProgramProperties) {
-        this.map = new Chunk(new Vector3(0,-300,0));
+        this.map = new Chunk(new Vector3(0,0,0));
         this.GameInitStatus = initWebGPUContext(prop.canvas).then(async ctx => {
             this._canvas = ctx.canvas;
             this._device = ctx.device;

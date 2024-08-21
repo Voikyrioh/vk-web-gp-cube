@@ -53,7 +53,7 @@ async function startProgram() {
             stopPoints: [0]
         }),
         'sliderAngleX': new Slider({
-            defaultValue: 0,
+            defaultValue: -45,
             max: 180,
             min: -180,
             name: "Angle X",
@@ -61,7 +61,7 @@ async function startProgram() {
             stopPoints: [-180, -90, -45, 0, 45, 90, 180]
         }),
         'sliderAngleY': new Slider({
-            defaultValue: 0,
+            defaultValue: 45,
             max: 180,
             min: -180,
             name: "Angle Y",
@@ -77,7 +77,7 @@ async function startProgram() {
             stopPoints: [-180, -90, -45, 0, 45, 90, 180]
         }),
         'sliderSize': new Slider({
-            defaultValue: 50,
+            defaultValue: 200,
             max: 400,
             min: 0,
             name: "Size",

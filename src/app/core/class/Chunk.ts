@@ -21,12 +21,12 @@ interface controllerAssign {
 }
 
 export class Chunk {
-    private static MaxSize: Vector3 = new Vector3(3,1,1);
-    private size = 50;
+    private static MaxSize: Vector3 = new Vector3(3,3,3);
+    private size = new Vector3(200,200,200);
     public pos: Vector3 = Vector3.fromArray([0,0,1])
-    public rotations: Vector3 = Vector3.fromArray([0,0,0])
+    public rotations: Vector3 = Vector3.fromArray([-45/360*2*Math.PI,45/360*2*Math.PI,0])
     //private distance: number = 200;
-    chunk: Array<Array<Array<Cube>>>;
+    chunk: Array<Array<Array<Cube|null>>>;
 
     constructor(position: Vector3) {
         this.chunk = Array(Chunk.MaxSize.x).fill(Array(Chunk.MaxSize.y).fill(Array(Chunk.MaxSize.z)));
@@ -34,29 +34,37 @@ export class Chunk {
     }
 
     private generateChunk(position: Vector3) {
-        for (let x = 0; x < Chunk.MaxSize.x; x++) {
+        for(let x = 0; x < Chunk.MaxSize.x; x++) {
             for(let y = 0; y < Chunk.MaxSize.y; y++) {
-                for(let z = 0; z < Chunk.MaxSize.z; z++) {
-                    const blockPos = new Vector3(
-                        position.x + (x - Chunk.MaxSize.x/2) * this.size,
-                        position.y + (y - Chunk.MaxSize.y/2) * this.size,
-                        position.z + (z - Chunk.MaxSize.z/2) * this.size
-                    );
-
+                for (let z = 0; z < Chunk.MaxSize.z; z++) {
                     this.chunk[x][y][z] = new Cube({
                         angle: new Vector3(0, 0, 0),
-                        coordinates: blockPos,
+                        coordinates: new Vector3(0,0,0),
                         distance: 1,
-                        size: this.size,
+                        size: this.size.x,
                         texturePath: "textures/grassblockAllSides.jpg"
                     });
                 }
             }
         }
+        this.chunk[0][0][0] = null;
     }
 
     public draw(): number[][] {
-        return this.chunk.flat(2).map(block => block.toVertexes());
+        const vertexes: number[][] = [];
+        for(let x = 0; x < Chunk.MaxSize.x; x++) {
+            for(let y = 0; y < Chunk.MaxSize.y; y++) {
+                for (let z = 0; z < Chunk.MaxSize.z; z++) {
+                    const cube = this.chunk[x][y][z];
+                    if (cube) {
+                        cube.size = this.size.x/3;
+                        cube.coordinates = new Vector3(x,y,z).multiply(this.size).divide(Chunk.MaxSize);
+                        vertexes.push(cube.toVertexes());
+                    }
+                }
+            }
+        }
+        return vertexes;
     }
 
     public attachControls(controllers: controllerAssign) {
@@ -66,6 +74,6 @@ export class Chunk {
         controllers.rotateX?.attach((value) => {this.rotations.x = value/360*2*Math.PI})
         controllers.rotateY?.attach((value) => {this.rotations.y = value/360*2*Math.PI})
         controllers.rotateZ?.attach((value) => {this.rotations.z = value/360*2*Math.PI})
-        controllers.size?.attach((value) => {this.size = value})
+        controllers.size?.attach((value) => {this.size = new Vector3(value, value, value)})
     }
 }

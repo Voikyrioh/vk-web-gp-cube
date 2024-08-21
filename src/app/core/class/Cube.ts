@@ -10,7 +10,6 @@ import Vector3 from "./Vector3.ts";
 import SimpleTriangle from "./SimpleTriangle.ts";
 import {CubeFaceVertexes, TriangleVertexes} from "../types/Geometry.ts";
 import {Colors} from "../types/BasicTypes.ts";
-import {adaptatorHeight, adaptatorWidth} from "../../../constants/defaults.ts";
 
 export enum Sides {
     FACE = 'face',
@@ -97,8 +96,8 @@ export class Cube {
                                 .map(point => Vector3.fromArray(point))
                                 .map(Cube.CubeFaceRotations[s])
                                 //.map((vector: Vector3) => Vector3.computeCoordinatesRotation(vector,Vector3.fromArray(this.angle.toArray())))
-                                .map((vec) => Vector3.fromArray([vec.x*this.vertexCoeff,vec.y*this.vertexCoeff,vec.z*this.vertexCoeff]))
-                                .map((val) => Cube.translateVertexes(val, this.coordinates)) as TriangleVertexes
+                                .map((vec) => Vector3.fromArray([vec.x*this.vertexCoeff,vec.y*this.vertexCoeff,vec.z*this.vertexCoeff]).add(this.coordinates)) as TriangleVertexes
+                                //.map((val) => Cube.translateVertexes(val, this.coordinates)) as TriangleVertexes
                         }),
                         new SimpleTriangle({
                             a: Vector3.fromArray(this.angle.toArray()),
@@ -107,8 +106,8 @@ export class Cube {
                                 .map(point => Vector3.fromArray(point))
                                 .map(Cube.CubeFaceRotations[s])
                                 //.map((vector: Vector3) => Vector3.computeCoordinatesRotation(vector,Vector3.fromArray(this.angle.toArray())))
-                                .map((vec) => Vector3.fromArray([vec.x*this.vertexCoeff,vec.y*this.vertexCoeff,vec.z*this.vertexCoeff]))
-                                .map((val) => Cube.translateVertexes(val, this.coordinates)) as TriangleVertexes
+                                .map((vec) => Vector3.fromArray([vec.x*this.vertexCoeff,vec.y*this.vertexCoeff,vec.z*this.vertexCoeff]).add(this.coordinates)) as TriangleVertexes
+                                //.map((val) => Cube.translateVertexes(val, this.coordinates)) as TriangleVertexes
                         })
                     ]
                 ]
@@ -130,14 +129,9 @@ export class Cube {
         this.generateSides();
     }
 
-    public getCubeTexture(): Promise<HTMLImageElement> {
-        return this.texture;
-    }
-
     toVertexes(): number[] {
         this.generateSides();
         return Object.entries(this.sides)
-            //.sort(([,trianglesA], [,trianglesB]) => SimpleTriangle.sortTriangleByDepth(trianglesA, trianglesB))
             .map(([key, value]) =>
                 value.map((triangle, triangleIndex) => {
                     const trianglePoints = triangle.computeVertexes();
@@ -149,14 +143,5 @@ export class Cube {
                     return pointsVert.map((pts, pointIndex) => [...pts, ...Cube.FacesTexturesCoordinates[key as Sides][triangleIndex][pointIndex]]).flat();
                 })).flat()
             .flat()
-    }
-
-    private static translateVertexes(vert: Vector3, coordinates: Vector3): Vector3 {
-        const [x,y,z] = vert.toArray();
-        return Vector3.fromArray([
-            x + (coordinates.x / adaptatorWidth),
-            y + (coordinates.y / adaptatorHeight),
-            z + (coordinates.z / adaptatorWidth),
-        ]);
     }
 }
