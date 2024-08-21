@@ -7,7 +7,7 @@ LICENSE file in the root directory of this source tree.
  */
 
 import {initWebGPUContext} from "../utils.ts";
-import {Chunk} from "./Map.ts";
+import {Chunk} from "./Chunk.ts";
 // @ts-ignore
 import shader from "../../../shaders/basic.wgsl?raw";
 import {Cube} from "./Cube.ts";
@@ -81,7 +81,8 @@ export class MainProgram {
                 targets: [{ format: "bgra8unorm" }]
             },
             primitive: {
-                topology: 'triangle-list'
+                topology: 'triangle-list',
+                //cullMode: 'front'
             }
         });
 
@@ -89,11 +90,11 @@ export class MainProgram {
 
         this._uniformBuffer = this._device.createBuffer({
             label: 'uniform',
-            size: 12*4,
+            size: 16*4,
             usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
         });
 
-        const rotationMatrix = new Float32Array(VecMatrix.addVertexFloat32Padding(VecMatrix.getRotationMatrice(this.map.rotations)));
+        const rotationMatrix = new Float32Array(VecMatrix.get3DObjectMatrix(this.map.pos, this.map.rotations));
         this._device.queue.writeBuffer(this._uniformBuffer, 0, rotationMatrix);
 
         this._uniformGroup = this._device.createBindGroup({
@@ -130,7 +131,7 @@ export class MainProgram {
             { width: textureData.width, height: textureData.height },
         );
 
-        return texture
+        return texture;
     }
 
     private async initialize(): Promise<void> {
@@ -162,8 +163,7 @@ export class MainProgram {
             usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST
         });
         this._device.queue.writeBuffer(vertexBuffer, 0, vertexes);
-
-        const rotationMatrix = new Float32Array(VecMatrix.addVertexFloat32Padding(VecMatrix.getRotationMatrice(this.map.rotations)));
+        const rotationMatrix = new Float32Array(VecMatrix.get3DObjectMatrix(this.map.pos, this.map.rotations));
         this._device.queue.writeBuffer(this._uniformBuffer, 0, rotationMatrix);
 
         const commandEncoder = this._device.createCommandEncoder();
@@ -175,7 +175,7 @@ export class MainProgram {
                 storeOp: 'store'
             }]
         });
-        passEncoder.setViewport(0,0,800,600, 0,1)
+        passEncoder.setViewport(0,0,800,600, 0,1);
         passEncoder.setPipeline(this._pipeline);
         passEncoder.setVertexBuffer(0, vertexBuffer);
         passEncoder.setBindGroup(0, this._uniformGroup);
@@ -196,11 +196,12 @@ export class MainProgram {
         this.map.attachControls({
             posX: appSliders.sliderX,
             posY: appSliders.sliderY,
+            posZ: appSliders.sliderZ,
             rotateX: appSliders.sliderAngleX,
             rotateY: appSliders.sliderAngleY,
             rotateZ: appSliders.sliderAngleZ,
-            distance: appSliders.sliderSize,
-        })
+            size: appSliders.sliderSize,
+        });
     }
 
     private computeFrameRate(timestamp: number, lastTimeStamp: number) {

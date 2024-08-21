@@ -96,8 +96,8 @@ export class Cube {
                                 .slice(0,3)
                                 .map(point => Vector3.fromArray(point))
                                 .map(Cube.CubeFaceRotations[s])
-                                .map((vector: Vector3) => Vector3.computeCoordinatesRotation(vector,Vector3.fromArray(this.angle.toArray())))
-                                .map((vec) => Vector3.fromArray([vec.x*this.vertexCoeff/adaptatorWidth,vec.y*this.vertexCoeff/adaptatorHeight,vec.z*this.vertexCoeff/adaptatorWidth]))
+                                //.map((vector: Vector3) => Vector3.computeCoordinatesRotation(vector,Vector3.fromArray(this.angle.toArray())))
+                                .map((vec) => Vector3.fromArray([vec.x*this.vertexCoeff,vec.y*this.vertexCoeff,vec.z*this.vertexCoeff]))
                                 .map((val) => Cube.translateVertexes(val, this.coordinates)) as TriangleVertexes
                         }),
                         new SimpleTriangle({
@@ -106,8 +106,8 @@ export class Cube {
                                 .slice(3)
                                 .map(point => Vector3.fromArray(point))
                                 .map(Cube.CubeFaceRotations[s])
-                                .map((vector: Vector3) => Vector3.computeCoordinatesRotation(vector,Vector3.fromArray(this.angle.toArray())))
-                                .map((vec) => Vector3.fromArray([vec.x*this.vertexCoeff/adaptatorWidth,vec.y*this.vertexCoeff/adaptatorHeight,vec.z*this.vertexCoeff/adaptatorWidth]))
+                                //.map((vector: Vector3) => Vector3.computeCoordinatesRotation(vector,Vector3.fromArray(this.angle.toArray())))
+                                .map((vec) => Vector3.fromArray([vec.x*this.vertexCoeff,vec.y*this.vertexCoeff,vec.z*this.vertexCoeff]))
                                 .map((val) => Cube.translateVertexes(val, this.coordinates)) as TriangleVertexes
                         })
                     ]
@@ -137,7 +137,7 @@ export class Cube {
     toVertexes(): number[] {
         this.generateSides();
         return Object.entries(this.sides)
-            .sort(([,trianglesA], [,trianglesB]) => SimpleTriangle.sortTriangleByDepth(trianglesA, trianglesB))
+            //.sort(([,trianglesA], [,trianglesB]) => SimpleTriangle.sortTriangleByDepth(trianglesA, trianglesB))
             .map(([key, value]) =>
                 value.map((triangle, triangleIndex) => {
                     const trianglePoints = triangle.computeVertexes();

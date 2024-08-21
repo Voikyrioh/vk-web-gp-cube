@@ -10,33 +10,30 @@ import {Cube} from "./Cube.ts";
 import Vector3 from "./Vector3.ts";
 import {Slider} from "../../../web/components";
 
-//type controllableProperties = "posX" | "posY" | "posZ" | "distance" | "rotateX" | "rotateY" | "rotateZ" ;
 interface controllerAssign {
     posX?: Slider;
     posY?: Slider;
     posZ?: Slider;
-    distance?: Slider;
+    size?: Slider;
     rotateX?: Slider;
     rotateY?: Slider;
     rotateZ?: Slider
 }
 
 export class Chunk {
-    //private static TableInit: number [][] = Array(16).fill(Array(16));
-    private static MaxSize: Vector3 = new Vector3(16,4,16);
-    public pos: Vector3 = Vector3.fromArray([0,0,1])
+    private static MaxSize: Vector3 = new Vector3(3,1,1);
     private size = 50;
+    public pos: Vector3 = Vector3.fromArray([0,0,1])
     public rotations: Vector3 = Vector3.fromArray([0,0,0])
     //private distance: number = 200;
-    chunk: Record<string, Cube>;
+    chunk: Array<Array<Array<Cube>>>;
 
     constructor(position: Vector3) {
-        this.chunk = {};
+        this.chunk = Array(Chunk.MaxSize.x).fill(Array(Chunk.MaxSize.y).fill(Array(Chunk.MaxSize.z)));
         this.generateChunk(position);
     }
 
     private generateChunk(position: Vector3) {
-        //const chunkBuffer = Chunk.TableInit;
         for (let x = 0; x < Chunk.MaxSize.x; x++) {
             for(let y = 0; y < Chunk.MaxSize.y; y++) {
                 for(let z = 0; z < Chunk.MaxSize.z; z++) {
@@ -46,12 +43,8 @@ export class Chunk {
                         position.z + (z - Chunk.MaxSize.z/2) * this.size
                     );
 
-                    this.chunk[blockPos.toString()] = new Cube({
-                        angle: new Vector3(
-                            0,//this.rotations.x/360*2*Math.PI,
-                            0,//this.rotations.y/360*2*Math.PI,
-                            0,//this.rotations.z/360*2*Math.PI
-                        ),
+                    this.chunk[x][y][z] = new Cube({
+                        angle: new Vector3(0, 0, 0),
                         coordinates: blockPos,
                         distance: 1,
                         size: this.size,
@@ -63,24 +56,16 @@ export class Chunk {
     }
 
     public draw(): number[][] {
-        /*this.cube.coordinates = this.pos;
-        this.cube.size = this.distance;
-        this.cube.angle = this.rotations;*/
-        const blockVertexes: number[][] = []
-        for(const block in this.chunk) {
-            blockVertexes.push(this.chunk[block].toVertexes())
-        }
-
-        return blockVertexes;
+        return this.chunk.flat(2).map(block => block.toVertexes());
     }
 
     public attachControls(controllers: controllerAssign) {
-        controllers.posX?.attach((value) => { this.pos.x = value/800})
-        controllers.posY?.attach((value) => {this.pos.y = value/600})
-        controllers.posZ?.attach((value) => {this.pos.z = value/800})
+        controllers.posX?.attach((value) => { this.pos.x = value})
+        controllers.posY?.attach((value) => {this.pos.y = value})
+        controllers.posZ?.attach((value) => {this.pos.z = value})
         controllers.rotateX?.attach((value) => {this.rotations.x = value/360*2*Math.PI})
         controllers.rotateY?.attach((value) => {this.rotations.y = value/360*2*Math.PI})
         controllers.rotateZ?.attach((value) => {this.rotations.z = value/360*2*Math.PI})
-        //controllers.distance?.attach((value) => {this.distance = value})
+        controllers.size?.attach((value) => {this.size = value})
     }
 }

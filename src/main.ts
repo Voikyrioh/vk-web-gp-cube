@@ -7,9 +7,9 @@
  */
 
 import './style.css';
+import setupWebsiteScript from "./web/main.ts";
 import { Defaults } from './constants';
 import { NeccesarySliders } from "./app/types";
-import setupWebsiteScript from "./web/main.ts";
 import { Modal, Slider } from "./web/components";
 import { MainProgram } from "./app/core/class/MainProgram.ts";
 
@@ -44,13 +44,13 @@ async function startProgram() {
             step: 1,
             stopPoints: [0]
         }),
-        'sliderSize': new Slider({
-            defaultValue: Defaults.adaptatorWidth / 8,
+        'sliderZ': new Slider({
+            defaultValue: 0,
             max: Defaults.adaptatorWidth / 2,
-            min: 0,
-            name: "Size",
+            min: Defaults.adaptatorWidth / 2 * -1,
+            name: "Z",
             step: 1,
-            stopPoints: [Defaults.adaptatorWidth / 8, Defaults.adaptatorWidth / 4, 300]
+            stopPoints: [0]
         }),
         'sliderAngleX': new Slider({
             defaultValue: 0,
@@ -75,6 +75,14 @@ async function startProgram() {
             name: "Angle Z",
             step: 1,
             stopPoints: [-180, -90, -45, 0, 45, 90, 180]
+        }),
+        'sliderSize': new Slider({
+            defaultValue: 50,
+            max: 400,
+            min: 0,
+            name: "Size",
+            step: 5,
+            stopPoints: [50, 100, 150, 200, 250, 300, 350]
         })
     };
 
@@ -90,7 +98,7 @@ async function startProgram() {
 
 function updateFPSIndicator(program: MainProgram) {
     const fpsIndicator = document.querySelector("#fps-indicator>b");
-    if(fpsIndicator) fpsIndicator.textContent = program.framerate?.toString(10);
+    if(fpsIndicator) fpsIndicator.textContent = program.framerate?.toString(10) ?? '';
     requestAnimationFrame(() => {updateFPSIndicator(program)})
 }
 

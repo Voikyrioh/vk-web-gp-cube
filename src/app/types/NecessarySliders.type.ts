@@ -1,1 +1,1 @@
-export type NeccesarySliders = "sliderX" | "sliderY" | "sliderSize" | "sliderAngleX" | "sliderAngleY" | "sliderAngleZ";
+export type NeccesarySliders = "sliderX" | "sliderY" | "sliderZ" | "sliderAngleX" | "sliderAngleY" | "sliderAngleZ" | "sliderSize";

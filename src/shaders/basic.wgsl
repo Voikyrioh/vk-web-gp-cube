@@ -4,15 +4,15 @@ struct VertexOut {
 };
 
 struct Uniforms {
-    rotationMatrix: mat3x3<f32>
+    rotationMatrix: mat4x4<f32>
 };
 
 @group(0) @binding(0) var<uniform> uni: Uniforms;
 
 @vertex
-fn vertmain(@location(0) pos: vec3f, @location(1) textCoord: vec2f) -> VertexOut {
+fn vertmain(@location(0) pos: vec4f, @location(1) textCoord: vec2f) -> VertexOut {
     var out: VertexOut;
-    out.position = vec4f(pos * uni.rotationMatrix, 1);
+    out.position = uni.rotationMatrix * pos;
     out.textureCoord = textCoord;
 
     return out;

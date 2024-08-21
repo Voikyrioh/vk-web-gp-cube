@@ -7,82 +7,101 @@ LICENSE file in the root directory of this source tree.
  */
 
 import Vector3 from "./Vector3.ts";
+import {adaptatorHeight, adaptatorWidth} from "../../../constants/defaults.ts";
 
 type MatrixArray = [
-    number, number, number,
-    number, number, number,
-    number, number, number,
+    number, number, number, number,
+    number, number, number, number,
+    number, number, number, number,
+    number, number, number, number,
 ];
 
 type MatrixArrayRow = [
-    number, number, number
+    number, number, number, number
 ];
 
 type MatrixArrayColumn = [
-    number, number, number
+    number, number, number, number
 ];
 
 export class VecMatrix {
     static RotationMatrixX: (angle:number) => MatrixArray = (angle) => ([
-        1,                  0,                  0,
-        0,                  Math.cos(angle),    -Math.sin(angle),
-        0,                  Math.sin(angle),    Math.cos(angle),
+        1,                  0,                  0,                  0,
+        0,                  Math.cos(angle),    -Math.sin(angle),   0,
+        0,                  Math.sin(angle),    Math.cos(angle),    0,
+        0,                  0,                  0,                  1,
     ]);
 
     static RotationMatrixY: (angle:number) => MatrixArray = (angle) => ([
-        Math.cos(angle),    0,                  Math.sin(angle),
-        0,                  1,                  0,
-        -Math.sin(angle),    0,                  Math.cos(angle),
+        Math.cos(angle),    0,                  Math.sin(angle),    0,
+        0,                  1,                  0,                  0,
+        -Math.sin(angle),   0,                  Math.cos(angle),    0,
+        0,                  0,                  0,                  1,
     ]);
 
     static RotationMatrixZ: (angle:number) => MatrixArray = (angle) => ([
-        Math.cos(angle),    -Math.sin(angle),   0,
-        Math.sin(angle),    Math.cos(angle),    0,
-        0,                  0,                  1,
+        Math.cos(angle),    -Math.sin(angle),   0,                  0,
+        Math.sin(angle),    Math.cos(angle),    0,                  0,
+        0,                  0,                  1,                  0,
+        0,                  0,                  0,                  1,
     ]);
 
     static TranslationMatrix: (t: Vector3) => MatrixArray = (t: Vector3) => ([
-        1, 1, 1,
-        1, 1, 1,
-        t.x, t.y, t.z,
-    ])
+        1,                  0,                  0,                  0,
+        0,                  1,                  0,                  0,
+        0,                  0,                  1,                  0,
+        t.x,                t.y,                t.z,                1,
+    ]);
 
-    private readonly matrix: MatrixArray = Array(9*9) as MatrixArray;
-    public readonly rows: [MatrixArrayRow, MatrixArrayRow, MatrixArrayRow] = [
-        Array<number>(3) as MatrixArrayRow,
-        Array<number>(3) as MatrixArrayRow,
-        Array<number>(3) as MatrixArrayRow
+    static GridSpaceMatrix: (screenWidth: number, screenHeight: number, screenDepth: number) => MatrixArray = (sw, sh, sd) => ([
+        2/sw,               0,                  0,                  0,
+        0,                  2/sh,               0,                  0,
+        0,                  0,                  (2/sd),               0,
+        0,                  0,                  0,                  1,
+    ]);
+
+    private readonly matrix: MatrixArray = Array(16*16) as MatrixArray;
+    public readonly rows: [MatrixArrayRow, MatrixArrayRow, MatrixArrayRow, MatrixArrayRow] = [
+        Array<number>(4) as MatrixArrayRow,
+        Array<number>(4) as MatrixArrayRow,
+        Array<number>(4) as MatrixArrayRow,
+        Array<number>(4) as MatrixArrayRow
     ];
-    public readonly columns: [MatrixArrayColumn,MatrixArrayColumn,MatrixArrayColumn] = [
-        Array<number>(3) as MatrixArrayColumn,
-        Array<number>(3) as MatrixArrayColumn,
-        Array<number>(3) as MatrixArrayColumn
+    public readonly columns: [MatrixArrayColumn, MatrixArrayColumn, MatrixArrayColumn, MatrixArrayColumn] = [
+        Array<number>(4) as MatrixArrayColumn,
+        Array<number>(4) as MatrixArrayColumn,
+        Array<number>(4) as MatrixArrayColumn,
+        Array<number>(4) as MatrixArrayColumn
     ];
 
     constructor(matrix: MatrixArray) {
         // Double-checking if the value and length is correct
-        this.matrix = Array(9).fill(null).map((_, index) => Number(matrix[index]) || 0) as MatrixArray;
+        this.matrix = Array(16).fill(null).map((_, index) => Number(matrix[index]) || 0) as MatrixArray;
 
         // Define rows
         this.rows = [
-            this.matrix.slice(0, 3) as MatrixArrayRow,
-            this.matrix.slice(3, 6) as MatrixArrayRow,
-            this.matrix.slice(6, 9) as MatrixArrayRow
+            this.matrix.slice(0, 4) as MatrixArrayRow,
+            this.matrix.slice(4, 8) as MatrixArrayRow,
+            this.matrix.slice(8, 12) as MatrixArrayRow,
+            this.matrix.slice(12, 16) as MatrixArrayRow
         ];
 
         // Define columns
         this.columns = [
-            this.matrix.filter((_,index) => [1,4,7].includes(index + 1)) as MatrixArrayColumn,
-            this.matrix.filter((_,index) => [2,5,8].includes(index + 1)) as MatrixArrayColumn,
-            this.matrix.filter((_,index) => [3,6,9].includes(index + 1)) as MatrixArrayColumn
+            this.matrix.filter((_,index) => [1, 5,  9, 13].includes(index + 1)) as MatrixArrayColumn,
+            this.matrix.filter((_,index) => [2, 6, 10, 14].includes(index + 1)) as MatrixArrayColumn,
+            this.matrix.filter((_,index) => [3, 7, 11, 15].includes(index + 1)) as MatrixArrayColumn,
+            this.matrix.filter((_,index) => [4, 8, 12, 16].includes(index + 1)) as MatrixArrayColumn
         ];
     }
 
-    public static getRotationMatrice(angles: Vector3): MatrixArray {
+    public static get3DObjectMatrix(translations: Vector3, rotations: Vector3): MatrixArray {
         return [
-            VecMatrix.RotationMatrixX(angles.x),
-            VecMatrix.RotationMatrixY(angles.y),
-            VecMatrix.RotationMatrixZ(angles.z),
+            VecMatrix.GridSpaceMatrix(adaptatorWidth, adaptatorHeight, adaptatorWidth),
+            VecMatrix.TranslationMatrix(translations),
+            VecMatrix.RotationMatrixX(rotations.x),
+            VecMatrix.RotationMatrixY(rotations.y),
+            VecMatrix.RotationMatrixZ(rotations.z),
         ].reduce(VecMatrix.multiply);
     }
 
