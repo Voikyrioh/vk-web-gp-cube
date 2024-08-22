@@ -37,7 +37,7 @@ async function startProgram() {
             stopPoints: [0]
         }),
         'sliderY': new Slider({
-            defaultValue: 0,
+            defaultValue: 200,
             max: Defaults.adaptatorHeight,
             min: Defaults.adaptatorHeight * -1,
             name: "Y",
@@ -47,7 +47,7 @@ async function startProgram() {
         'sliderZ': new Slider({
             defaultValue: -400,
             max: 0,
-            min: -1000,
+            min: -2000,
             name: "Z",
             step: 1,
             stopPoints: [0]
@@ -94,11 +94,11 @@ async function startProgram() {
         }),
         'sliderDistance': new Slider({
             defaultValue: 200,
-            max: 800,
+            max: 1001,
             min: 1,
             name: "Distance",
             step: 10,
-            stopPoints: [200,400,600]
+            stopPoints: [201,401,601]
         })
     };
 
