@@ -83,6 +83,14 @@ async function startProgram() {
             name: "Size",
             step: 5,
             stopPoints: [50, 100, 150, 200, 250, 300, 350]
+        }),
+        'sliderFudge': new Slider({
+            defaultValue: 10,
+            max: 100,
+            min: 0,
+            name: "Fudge",
+            step: 1,
+            stopPoints: []
         })
     };
 
@@ -98,7 +106,7 @@ async function startProgram() {
 
 function updateFPSIndicator(program: MainProgram) {
     const fpsIndicator = document.querySelector("#fps-indicator>b");
-    if(fpsIndicator) fpsIndicator.textContent = program.framerate?.toString(10) ?? '';
+    if(fpsIndicator) fpsIndicator.textContent = program.fps?.toString(10) ?? '';
     requestAnimationFrame(() => {updateFPSIndicator(program)})
 }
 

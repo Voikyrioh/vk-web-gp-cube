@@ -56,7 +56,14 @@ export class VecMatrix {
     static GridSpaceMatrix: (screenWidth: number, screenHeight: number, screenDepth: number) => MatrixArray = (sw, sh, sd) => ([
         2/sw,               0,                  0,                  0,
         0,                  2/sh,               0,                  0,
-        0,                  0,                  (2/sd),               0,
+        0,                  0,                  2/sd,               0,
+        0,                  0,                  0,                  1,
+    ]);
+
+    static ScalingMatrix: (vector: Vector3) => MatrixArray = (vector: Vector3) => ([
+        vector.x,           0,                  0,                  0,
+        0,                  vector.y,           0,                  0,
+        0,                  0,                  vector.z,           0,
         0,                  0,                  0,                  1,
     ]);
 
@@ -95,13 +102,14 @@ export class VecMatrix {
         ];
     }
 
-    public static get3DObjectMatrix(translations: Vector3, rotations: Vector3): MatrixArray {
+    public static get3DObjectMatrix(translations: Vector3, scale: Vector3, rotations: Vector3): MatrixArray {
         return [
-            VecMatrix.GridSpaceMatrix(adaptatorWidth, adaptatorHeight, adaptatorWidth),
+            VecMatrix.GridSpaceMatrix(adaptatorWidth, adaptatorHeight, 30000),
             VecMatrix.TranslationMatrix(translations),
             VecMatrix.RotationMatrixX(rotations.x),
             VecMatrix.RotationMatrixY(rotations.y),
             VecMatrix.RotationMatrixZ(rotations.z),
+            VecMatrix.ScalingMatrix(scale),
         ].reduce(VecMatrix.multiply);
     }
 

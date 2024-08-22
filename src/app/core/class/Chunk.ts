@@ -22,9 +22,9 @@ interface controllerAssign {
 
 export class Chunk {
     private static MaxSize: Vector3 = new Vector3(3,3,3);
-    private size = new Vector3(200,200,200);
-    public pos: Vector3 = Vector3.fromArray([0,0,1])
-    public rotations: Vector3 = Vector3.fromArray([-45/360*2*Math.PI,45/360*2*Math.PI,0])
+    public size = new Vector3(200,200,200);
+    public pos: Vector3 = Vector3.fromArray([0,0,0])
+    public rotations: Vector3 = Vector3.fromArray([45/180*Math.PI,45/180*Math.PI,0])
     //private distance: number = 200;
     chunk: Array<Array<Array<Cube|null>>>;
 
@@ -50,7 +50,7 @@ export class Chunk {
         this.chunk[0][0][0] = null;
     }
 
-    public draw(): number[][] {
+    public getChunkVertexes(): number[][] {
         const vertexes: number[][] = [];
         for(let x = 0; x < Chunk.MaxSize.x; x++) {
             for(let y = 0; y < Chunk.MaxSize.y; y++) {
@@ -58,7 +58,7 @@ export class Chunk {
                     const cube = this.chunk[x][y][z];
                     if (cube) {
                         cube.size = this.size.x/3;
-                        cube.coordinates = new Vector3(x,y,z).multiply(this.size).divide(Chunk.MaxSize);
+                        cube.coordinates = new Vector3(x,y,z).multiply(Vector3.fromArray([6, 6, 6])).divide(Chunk.MaxSize);
                         vertexes.push(cube.toVertexes());
                     }
                 }

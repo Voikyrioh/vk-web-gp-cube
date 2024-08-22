@@ -29,7 +29,9 @@ export class MainProgram {
     public GameInitStatus: Promise<boolean>;
     private _uniformBuffer!: GPUBuffer;
     private _uniformGroup!: GPUBindGroup;
-    public framerate!: number | null;
+    private framerateHistory: number[] = [];
+    public fps = 0;
+    private fudge: number = 10;
 
 
     constructor(prop: MainProgramProperties) {
@@ -82,19 +84,24 @@ export class MainProgram {
             },
             primitive: {
                 topology: 'triangle-list',
-                //cullMode: 'front'
-            }
+                cullMode: 'none'
+            },
+            depthStencil: {
+                depthWriteEnabled: true,
+                depthCompare: 'less',
+                format: 'depth24plus',
+            },
         });
 
         const sampler = this._device.createSampler();
 
         this._uniformBuffer = this._device.createBuffer({
             label: 'uniform',
-            size: 16*4,
+            size: 16*4 + 4*4,
             usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
         });
 
-        const rotationMatrix = new Float32Array(VecMatrix.get3DObjectMatrix(this.map.pos, this.map.rotations));
+        const rotationMatrix = new Float32Array(VecMatrix.get3DObjectMatrix(this.map.pos, this.map.size, this.map.rotations));
         this._device.queue.writeBuffer(this._uniformBuffer, 0, rotationMatrix);
 
         this._uniformGroup = this._device.createBindGroup({
@@ -148,7 +155,12 @@ export class MainProgram {
     private mainLoop(lastTimeStamp: number): void {
         if (this.running) {
             requestAnimationFrame(async (timestamp) => {
-                this.computeFrameRate(timestamp, lastTimeStamp);
+                this.framerateHistory.push(timestamp - lastTimeStamp);
+                if (this.framerateHistory.reduce((a, b) => a + b, 0) >= 1000) {
+                    const buffer = this.framerateHistory;
+                    this.framerateHistory = [];
+                    this.setAppFPS(buffer);
+                }
                 await this.draw(timestamp - lastTimeStamp);
                 this.mainLoop(timestamp);
             })
@@ -156,24 +168,38 @@ export class MainProgram {
     }
 
     private async draw(time: number): Promise<void> {
-        const chunk: number[][] = this.map.draw();
+        this.map.rotations.y += time * Math.PI / 5000;
+        const chunk: number[][] = this.map.getChunkVertexes();
         const vertexes = new Float32Array(chunk.flat());
         const vertexBuffer = this._device.createBuffer({
             size: vertexes.byteLength,
             usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST
         });
         this._device.queue.writeBuffer(vertexBuffer, 0, vertexes);
-        const rotationMatrix = new Float32Array(VecMatrix.get3DObjectMatrix(this.map.pos, this.map.rotations));
+        const rotationMatrix = new Float32Array([...VecMatrix.get3DObjectMatrix(this.map.pos, this.map.size, this.map.rotations), this.fudge]);
         this._device.queue.writeBuffer(this._uniformBuffer, 0, rotationMatrix);
 
         const commandEncoder = this._device.createCommandEncoder();
+
+        const canvasTexture = this._canvas.getCurrentTexture();
+        const depthTexture = this._device.createTexture({
+            size: [canvasTexture.width, canvasTexture.height],
+            format: 'depth24plus',
+            usage: GPUTextureUsage.RENDER_ATTACHMENT,
+        });
         const passEncoder = commandEncoder.beginRenderPass({
             colorAttachments: [{
                 view: this._canvas.getCurrentTexture().createView(),
                 loadOp: 'clear',
                 clearValue: [33/255, 33/255, 33/255, 1],
                 storeOp: 'store'
-            }]
+            }],
+            depthStencilAttachment: {
+                view: depthTexture.createView(),
+                depthClearValue: 1.0,
+                depthLoadOp: 'clear',
+                depthStoreOp: 'store',
+            },
         });
         passEncoder.setViewport(0,0,800,600, 0,1);
         passEncoder.setPipeline(this._pipeline);
@@ -202,9 +228,10 @@ export class MainProgram {
             rotateZ: appSliders.sliderAngleZ,
             size: appSliders.sliderSize,
         });
+        appSliders.sliderFudge.attach((val) => this.fudge = val)
     }
 
-    private computeFrameRate(timestamp: number, lastTimeStamp: number) {
-        this.framerate = Math.floor(1/((timestamp - lastTimeStamp) / 1000));
+    private setAppFPS(buffer: number[]) {
+        this.fps = buffer.length -1;
     }
 }

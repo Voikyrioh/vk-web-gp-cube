@@ -11,7 +11,9 @@ export async function initWebGPUContext(canvas: HTMLCanvasElement): Promise<{ ca
         throw Error("WebGPU not supported.");
     }
 
-    const adapter = await navigator.gpu.requestAdapter();
+    const adapter = await navigator.gpu.requestAdapter({
+        powerPreference: "high-performance"
+    });
     if (!adapter) {
         throw Error("Couldn't request WebGPU adapter.");
     }
@@ -21,7 +23,9 @@ export async function initWebGPUContext(canvas: HTMLCanvasElement): Promise<{ ca
         throw new Error('This navigator is not supported!');
     }
 
-    const device = await adapter.requestDevice();
+    const device = await adapter.requestDevice({
+        label: "Cube"
+    });
 
     canvasContext.configure({
         device,
