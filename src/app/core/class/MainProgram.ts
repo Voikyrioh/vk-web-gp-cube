@@ -31,7 +31,8 @@ export class MainProgram {
     private _uniformGroup!: GPUBindGroup;
     private framerateHistory: number[] = [];
     public fps = 0;
-    private fudge: number = 10;
+    private fov: number = 60;
+    private distview: number = 200;
 
 
     constructor(prop: MainProgramProperties) {
@@ -101,7 +102,7 @@ export class MainProgram {
             usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
         });
 
-        const rotationMatrix = new Float32Array(VecMatrix.get3DObjectMatrix(this.map.pos, this.map.size, this.map.rotations));
+        const rotationMatrix = new Float32Array(VecMatrix.get3DObjectMatrix(this.map.pos, this.map.size, this.map.rotations, this.fov, this.distview));
         this._device.queue.writeBuffer(this._uniformBuffer, 0, rotationMatrix);
 
         this._uniformGroup = this._device.createBindGroup({
@@ -176,7 +177,7 @@ export class MainProgram {
             usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST
         });
         this._device.queue.writeBuffer(vertexBuffer, 0, vertexes);
-        const rotationMatrix = new Float32Array([...VecMatrix.get3DObjectMatrix(this.map.pos, this.map.size, this.map.rotations), this.fudge]);
+        const rotationMatrix = new Float32Array([...VecMatrix.get3DObjectMatrix(this.map.pos, this.map.size, this.map.rotations,this.fov, this.distview)]);
         this._device.queue.writeBuffer(this._uniformBuffer, 0, rotationMatrix);
 
         const commandEncoder = this._device.createCommandEncoder();
@@ -228,7 +229,8 @@ export class MainProgram {
             rotateZ: appSliders.sliderAngleZ,
             size: appSliders.sliderSize,
         });
-        appSliders.sliderFudge.attach((val) => this.fudge = val)
+        appSliders.sliderFOV.attach((val) => this.fov = val*Math.PI/180)
+        appSliders.sliderDistance.attach((val) => this.distview = val)
     }
 
     private setAppFPS(buffer: number[]) {

@@ -67,6 +67,24 @@ export class VecMatrix {
         0,                  0,                  0,                  1,
     ]);
 
+    static Fudge: (fudge: number) => MatrixArray = (fudge: number) => ([
+        1,                  0,                  0,                  0,
+        0,                  1,                  0,                  0,
+        0,                  0,                  1,                  fudge,
+        0,                  0,                  0,                  1,
+    ]);
+
+    static FOV: (fieldOfViewYInRadians: number, aspect: number, zNear: number, zFar: number) => MatrixArray = (fov, asp, zn, zf) => {
+        const f = Math.tan(Math.PI * 0.5 - 0.5 * fov);
+        const rangeInv = 1 / (zn - zf);
+        return [
+            f / asp,            0,                  0,                  0,
+            0,                  f,                  0,                  0,
+            0,                  0,                  zf * rangeInv,     -1,
+            0,                  0,                  zn * zf * rangeInv, 1,
+        ]
+    };
+
     private readonly matrix: MatrixArray = Array(16*16) as MatrixArray;
     public readonly rows: [MatrixArrayRow, MatrixArrayRow, MatrixArrayRow, MatrixArrayRow] = [
         Array<number>(4) as MatrixArrayRow,
@@ -102,9 +120,9 @@ export class VecMatrix {
         ];
     }
 
-    public static get3DObjectMatrix(translations: Vector3, scale: Vector3, rotations: Vector3): MatrixArray {
+    public static get3DObjectMatrix(translations: Vector3, scale: Vector3, rotations: Vector3, fov: number, viewDistance: number): MatrixArray {
         return [
-            VecMatrix.GridSpaceMatrix(0, adaptatorWidth, 0, adaptatorHeight, 400, -400),
+            VecMatrix.FOV(fov,adaptatorWidth/adaptatorHeight, 1, viewDistance),
             VecMatrix.TranslationMatrix(translations),
             VecMatrix.RotationMatrixX(rotations.x),
             VecMatrix.RotationMatrixY(rotations.y),

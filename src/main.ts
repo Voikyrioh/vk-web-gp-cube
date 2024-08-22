@@ -84,13 +84,21 @@ async function startProgram() {
             step: 5,
             stopPoints: [50, 100, 150, 200, 250, 300, 350]
         }),
-        'sliderFudge': new Slider({
-            defaultValue: 10,
-            max: 100,
-            min: 0,
-            name: "Fudge",
+        'sliderFOV': new Slider({
+            defaultValue: 60,
+            max: 120,
+            min: 1,
+            name: "FOV",
             step: 1,
-            stopPoints: []
+            stopPoints: [60,90]
+        }),
+        'sliderDistance': new Slider({
+            defaultValue: 200,
+            max: 800,
+            min: 1,
+            name: "Distance",
+            step: 10,
+            stopPoints: [200,400,600]
         })
     };
 

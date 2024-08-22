@@ -5,7 +5,6 @@ struct VertexOut {
 
 struct Uniforms {
     rotationMatrix: mat4x4<f32>,
-    fudgeFactor: f32,
 };
 
 @group(0) @binding(0) var<uniform> uni: Uniforms;
@@ -13,10 +12,7 @@ struct Uniforms {
 @vertex
 fn vertmain(@location(0) pos: vec4f, @location(1) textCoord: vec2f) -> VertexOut {
     var out: VertexOut;
-    let position = uni.rotationMatrix * pos;
-    let zToDivideBy = 1.0 + position.z * uni.fudgeFactor;
-
-    out.position = vec4f(position.xyz, zToDivideBy);
+    out.position = uni.rotationMatrix * pos;
     out.textureCoord = textCoord;
 
     return out;
