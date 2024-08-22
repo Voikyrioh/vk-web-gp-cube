@@ -23,7 +23,7 @@ interface controllerAssign {
 export class Chunk {
     private static MaxSize: Vector3 = new Vector3(16,1,16);
     public size = new Vector3(100,100,100);
-    public pos: Vector3 = Vector3.fromArray([0,200,-600])
+    public pos: Vector3 = Vector3.fromArray([0,-200,-600])
     public rotations: Vector3 = Vector3.fromArray([0,0,0])
     chunk: Array<Array<Array<Cube|null>>>;
 
