@@ -30,24 +30,24 @@ async function startProgram() {
     const appSliders: Record<NeccesarySliders, Slider> = {
         'sliderX': new Slider({
             defaultValue: 0,
-            max: Defaults.adaptatorWidth / 2,
-            min: Defaults.adaptatorWidth / 2 * -1,
+            max: Defaults.adaptatorWidth,
+            min: Defaults.adaptatorWidth * -1,
             name: "X",
             step: 1,
             stopPoints: [0]
         }),
         'sliderY': new Slider({
             defaultValue: 0,
-            max: Defaults.adaptatorHeight / 2,
-            min: Defaults.adaptatorHeight / 2 * -1,
+            max: Defaults.adaptatorHeight,
+            min: Defaults.adaptatorHeight * -1,
             name: "Y",
             step: 1,
             stopPoints: [0]
         }),
         'sliderZ': new Slider({
-            defaultValue: 0,
-            max: Defaults.adaptatorWidth / 2,
-            min: Defaults.adaptatorWidth / 2 * -1,
+            defaultValue: -400,
+            max: 0,
+            min: -1000,
             name: "Z",
             step: 1,
             stopPoints: [0]

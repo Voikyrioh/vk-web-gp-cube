@@ -31,8 +31,8 @@ export class MainProgram {
     private _uniformGroup!: GPUBindGroup;
     private framerateHistory: number[] = [];
     public fps = 0;
-    private fov: number = 60;
-    private distview: number = 200;
+    private fov: number = 60 * Math.PI  / 180;
+    private distview: number = 1000;
 
 
     constructor(prop: MainProgramProperties) {
