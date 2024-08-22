@@ -16,7 +16,7 @@ fn vertmain(@location(0) pos: vec4f, @location(1) textCoord: vec2f) -> VertexOut
     let position = uni.rotationMatrix * pos;
     let zToDivideBy = 1.0 + position.z * uni.fudgeFactor;
 
-    out.position = vec4f(position.xy / zToDivideBy, position.zw);
+    out.position = vec4f(position.xyz, zToDivideBy);
     out.textureCoord = textCoord;
 
     return out;

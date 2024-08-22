@@ -53,11 +53,11 @@ export class VecMatrix {
         t.x,                t.y,                t.z,                1,
     ]);
 
-    static GridSpaceMatrix: (screenWidth: number, screenHeight: number, screenDepth: number) => MatrixArray = (sw, sh, sd) => ([
-        2/sw,               0,                  0,                  0,
-        0,                  2/sh,               0,                  0,
-        0,                  0,                  2/sd,               0,
-        0,                  0,                  0,                  1,
+    static GridSpaceMatrix: (left: number, right: number, bottom: number, top: number, near: number, far: number) => MatrixArray = (left, right, bottom, top, near, far) => ([
+        2/(right - left),                   0,                                  0,                      0,
+        0,                                  2/(top - bottom),                   0,                      0,
+        0,                                  0,                                  1/(near - far),         0,
+        (right + left) / (left - right),    (top + bottom) / (bottom - top),    near / (near - far),    1,
     ]);
 
     static ScalingMatrix: (vector: Vector3) => MatrixArray = (vector: Vector3) => ([
@@ -104,7 +104,7 @@ export class VecMatrix {
 
     public static get3DObjectMatrix(translations: Vector3, scale: Vector3, rotations: Vector3): MatrixArray {
         return [
-            VecMatrix.GridSpaceMatrix(adaptatorWidth, adaptatorHeight, 30000),
+            VecMatrix.GridSpaceMatrix(0, adaptatorWidth, 0, adaptatorHeight, 400, -400),
             VecMatrix.TranslationMatrix(translations),
             VecMatrix.RotationMatrixX(rotations.x),
             VecMatrix.RotationMatrixY(rotations.y),
