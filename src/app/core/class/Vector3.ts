@@ -83,14 +83,11 @@ export default class Vector3 {
         const [A,B,C] = angle.toArray();
         const [i,j,k] = coords.toArray();
         const { cos, sin } = Math;
-        let newX =
-            j * sin(A) * sin(B) * cos(C)
+        return j * sin(A) * sin(B) * cos(C)
             - k * cos(A) * sin(B) * cos(C)
             + j * cos(A) * sin(C)
             + k * sin(A) * sin(C)
             + i * cos(B) * cos(C);
-
-        return newX;
     }
 
 
@@ -98,36 +95,28 @@ export default class Vector3 {
         const [A,B,C] = angle.toArray();
         const [i,j,k] = coords.toArray();
         const { cos, sin } = Math;
-        let newY =
-            j * cos(A) * cos(C)
+        return j * cos(A) * cos(C)
             + k * sin(A) * cos(C)
             - j * sin(A) * sin(B) * sin(C)
             + k * cos(A) * sin(B) * sin(C)
             - i * cos(B) * sin(C);
-
-        return newY;
     }
 
     private static computeZ(coords: Vector3, angle: Vector3): number {
         const [A,B,] = angle.toArray();
         const [i,j,k] = coords.toArray();
         const { cos, sin } = Math;
-        let newZ =
-            k * cos(A) * cos(B)
+        return k * cos(A) * cos(B)
             - j * sin(A) * cos(B)
             + i * sin(B);
-
-        return newZ;
     }
 
     static computeCoordinatesRotation(coords: Vector3, angle: Vector3): Vector3 {
-        const newCoords: Vector3 = new Vector3(
+        return new Vector3(
             this.computeX(coords, angle),
             this.computeY(coords, angle),
             this.computeZ(coords, angle),
         );
-
-        return newCoords;
     }
 
     public toString(): string {
