@@ -1,9 +1,11 @@
 {
   "compilerOptions": {
     "allowImportingTsExtensions": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "lib": [
-      "ES2020",
+      "ES2022",
       "DOM",
       "DOM.Iterable",
       "ESNext"
@@ -21,6 +23,7 @@
     "strict": true,
     "target": "ES2022",
     "types": [
+      "@types/node",
       "@webgpu/types",
       "@types/mocha",
       "@types/chai"

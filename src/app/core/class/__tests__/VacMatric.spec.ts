@@ -44,7 +44,7 @@ describe('[unit] VecMatrix Class', () => {
         })
     });
 
-    describe('Multiply()', () => {
+    describe('multiply()', () => {
         it('should multiply correctly two MatrixArrays', () => {
             expect(VecMatrix.multiply([
                     1,   2,  3,  4,
@@ -63,6 +63,42 @@ describe('[unit] VecMatrix Class', () => {
                 162, 188, 214, 240,
                 50, 60, 70, 80
             ]);
+        });
+    });
+
+    describe('inverse2()', () => {
+        it('should multiply correctly two MatrixArrays', () => {
+            const precision = Math.pow(10,15);
+            expect(VecMatrix.inverse2([
+                    4, 7, 2, 3,
+                    0, 5, 9, 4,
+                    6, 1, 3, 8,
+                    5, 4, 7, 1
+                ])
+            ).to.be.a('array').that.deep.equal([
+                1/423, -6/47, 19/423, 61/423,
+                23/141, 7/282, -19/282, -7/141,
+                -41/423, 19/282, -7/846, 37/423,
+                2/141, 19/282, 29/282, -19/141
+            ].map(v => (Math.round(v*(precision))/(precision))));
+        });
+    });
+
+    describe('inverse()', () => {
+        it('should multiply correctly two MatrixArrays', () => {
+            const precision = Math.pow(10,15);
+            expect(VecMatrix.inverse([
+                    4, 7, 2, 3,
+                    0, 5, 9, 4,
+                    6, 1, 3, 8,
+                    5, 4, 7, 1
+                ])
+            ).to.be.a('array').that.deep.equal([
+                1/423, -6/47, 19/423, 61/423,
+                23/141, 7/282, -19/282, -7/141,
+                -41/423, 19/282, -7/846, 37/423,
+                2/141, 19/282, 29/282, -19/141
+            ].map(v => (Math.round(v*(precision))/(precision))));
         });
     });
 });
