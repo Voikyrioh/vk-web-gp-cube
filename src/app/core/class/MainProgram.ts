@@ -84,8 +84,7 @@ export class MainProgram {
                 targets: [{ format: "bgra8unorm" }]
             },
             primitive: {
-                topology: 'triangle-list',
-                cullMode: 'none'
+                cullMode: 'front'
             },
             depthStencil: {
                 depthWriteEnabled: true,
@@ -169,7 +168,7 @@ export class MainProgram {
     }
 
     private async draw(time: number): Promise<void> {
-        this.map.rotations.y += time * Math.PI / 5000;
+        //this.map.rotations.y += time * Math.PI / 5000;
         const chunk: number[][] = this.map.getChunkVertexes();
         const vertexes = new Float32Array(chunk.flat());
         const vertexBuffer = this._device.createBuffer({

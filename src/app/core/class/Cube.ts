@@ -28,9 +28,9 @@ export class Cube {
             [ 1,   1, 1],
             [-1,   1, 1],
             [-1,  -1, 1],
-            [ 1,   1, 1],
-            [ 1,  -1, 1],
             [-1,  -1, 1],
+            [ 1,  -1, 1],
+            [ 1,   1, 1],
         ];
     static FaceColors: Record<Sides, Colors> = {
         [Sides.FACE]: Colors.Green,
@@ -42,22 +42,22 @@ export class Cube {
     };
     static FacesTexturesCoordinates: Record<Sides, [TriangeTextureCoordinates,TriangeTextureCoordinates]> = {
         [Sides.FACE]: [
-            [ [1/2, 1/3], [1/4, 1/3], [1/4, 2/3] ], [ [1/2, 1/3], [1/2, 2/3], [1/4, 2/3] ]
+            [ [1/2, 1/3], [1/4, 1/3], [1/4, 2/3] ], [  [1/4, 2/3], [1/2, 2/3],[1/2, 1/3] ]
         ],
         [Sides.BOTTOM]: [
-            [ [1/2, 2/3], [1/4, 2/3], [1/4, 1] ], [ [1/2, 2/3], [1/2, 1], [1/4, 1] ]
+            [ [1/2, 2/3], [1/4, 2/3], [1/4, 1] ], [ [1/4, 1], [1/2, 1],[1/2, 2/3] ]
         ],
         [Sides.RIGHT]: [
-            [ [3/4, 1/3], [1/2, 1/3], [1/2, 2/3] ], [ [3/4, 1/3], [3/4, 2/3], [1/2, 2/3] ]
+            [ [3/4, 1/3], [1/2, 1/3], [1/2, 2/3] ], [ [1/2, 2/3], [3/4, 2/3], [3/4, 1/3] ]
         ],
         [Sides.LEFT]: [
-            [ [1/4, 1/3], [0, 1/3], [0, 2/3] ], [ [1/4, 1/3], [1/4, 2/3], [0, 2/3] ]
+            [ [1/4, 1/3], [0, 1/3], [0, 2/3] ], [ [0, 2/3], [1/4, 2/3], [1/4, 1/3] ]
         ],
         [Sides.TOP]: [
-            [ [1/2, 0], [1/4, 0], [1/4, 1/3] ], [ [1/2, 0], [1/2, 1/3], [1/4, 1/3] ]
+            [ [1/2, 0], [1/4, 0], [1/4, 1/3] ], [ [1/4, 1/3], [1/2, 1/3], [1/2, 0] ]
         ],
         [Sides.BACK]: [
-            [ [1, 1/3], [3/4, 1/3], [3/4, 2/3] ], [ [1, 1/3], [1, 2/3], [3/4, 2/3] ]
+            [ [1, 1/3], [3/4, 1/3], [3/4, 2/3] ], [ [3/4, 2/3], [1, 2/3], [1, 1/3] ]
         ],
     }
 
@@ -92,9 +92,7 @@ export class Cube {
                                 .slice(0,3)
                                 .map(point => Vector3.fromArray(point))
                                 .map(Cube.CubeFaceRotations[s])
-                                //.map((vector: Vector3) => Vector3.computeCoordinatesRotation(vector,Vector3.fromArray(this.angle.toArray())))
-                                .map((vec) => Vector3.fromArray([vec.x,vec.y,vec.z]).add(this.coordinates)) as TriangleVertexes
-                                //.map((val) => Cube.translateVertexes(val, this.coordinates)) as TriangleVertexes
+                                .map((vec) => Vector3.fromArray(vec.toArray()).add(this.coordinates)) as TriangleVertexes
                         }),
                         new SimpleTriangle({
                             a: Vector3.fromArray(this.angle.toArray()),
@@ -102,9 +100,7 @@ export class Cube {
                                 .slice(3)
                                 .map(point => Vector3.fromArray(point))
                                 .map(Cube.CubeFaceRotations[s])
-                                //.map((vector: Vector3) => Vector3.computeCoordinatesRotation(vector,Vector3.fromArray(this.angle.toArray())))
                                 .map((vec) => Vector3.fromArray(vec.toArray()).add(this.coordinates)) as TriangleVertexes
-                                //.map((val) => Cube.translateVertexes(val, this.coordinates)) as TriangleVertexes
                         })
                     ]
                 ]
