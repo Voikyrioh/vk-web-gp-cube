@@ -29,6 +29,10 @@ export default class Vector3 {
         return [this.x, this.y, this.z];
     }
 
+    public copy(): Vector3 {
+        return Vector3.fromArray(this.toArray());
+    }
+
     public add(vector: Vector3): Vector3 {
         this.x += vector.x;
         this.y += vector.y;
@@ -62,7 +66,7 @@ export default class Vector3 {
     }
 
     static scale(vector: Vector3, scale: number): Vector3 {
-        const newVector = Vector3.fromArray(vector.toArray())
+        const newVector = vector.copy()
         newVector.scale(scale);
 
         return newVector;

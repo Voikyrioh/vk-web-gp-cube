@@ -8,17 +8,6 @@ LICENSE file in the root directory of this source tree.
 
 import {Cube} from "./Cube.ts";
 import Vector3 from "./Vector3.ts";
-import {Slider} from "../../../web/components";
-
-interface controllerAssign {
-    posX?: Slider;
-    posY?: Slider;
-    posZ?: Slider;
-    size?: Slider;
-    rotateX?: Slider;
-    rotateY?: Slider;
-    rotateZ?: Slider
-}
 
 export class Chunk {
     private static MaxSize: Vector3 = new Vector3(16,1,16);
@@ -63,15 +52,5 @@ export class Chunk {
             }
         }
         return vertexes;
-    }
-
-    public attachControls(controllers: controllerAssign) {
-        controllers.posX?.attach((value) => { this.pos.x = value})
-        controllers.posY?.attach((value) => {this.pos.y = value})
-        controllers.posZ?.attach((value) => {this.pos.z = value})
-        controllers.rotateX?.attach((value) => {this.rotations.x = value/360*2*Math.PI})
-        controllers.rotateY?.attach((value) => {this.rotations.y = value/360*2*Math.PI})
-        controllers.rotateZ?.attach((value) => {this.rotations.z = value/360*2*Math.PI})
-        controllers.size?.attach((value) => {this.size = new Vector3(value, value, value)})
     }
 }

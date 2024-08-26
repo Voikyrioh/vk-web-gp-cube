@@ -17,6 +17,7 @@ import { MainProgram } from "./app/core/class/MainProgram.ts";
 async function startProgram() {
     const app = document.querySelector('#app-program');
     let canvasContext: HTMLCanvasElement = document.createElement('canvas');
+    canvasContext.setAttribute('tabIndex', "1");
     canvasContext.setAttribute('width', Defaults.adaptatorWidth.toString(10));
     canvasContext.setAttribute('height', Defaults.adaptatorHeight.toString(10));
     canvasContext.setAttribute('id', 'gpu-canvas');
@@ -28,7 +29,7 @@ async function startProgram() {
     }
 
     const appSliders: Record<NeccesarySliders, Slider> = {
-        'sliderX': new Slider({
+        /*'sliderX': new Slider({
             defaultValue: 0,
             max: Defaults.adaptatorWidth,
             min: Defaults.adaptatorWidth * -1,
@@ -83,7 +84,7 @@ async function startProgram() {
             name: "Size",
             step: 5,
             stopPoints: [50, 100, 150, 200, 250, 300, 350]
-        }),
+        }),*/
         'sliderFOV': new Slider({
             defaultValue: 60,
             max: 120,

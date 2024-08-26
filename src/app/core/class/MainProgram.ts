@@ -14,6 +14,8 @@ import {Cube} from "./Cube.ts";
 import {Slider} from "../../../web/components";
 import Vector3 from "./Vector3.ts";
 import {VecMatrix} from "./VecMatrix.ts";
+import {Camera} from "./Camera.ts";
+import {adaptatorHeight, adaptatorWidth} from "../../../constants/defaults.ts";
 
 interface MainProgramProperties {
     canvas: HTMLCanvasElement;
@@ -26,6 +28,7 @@ export class MainProgram {
     private _bindGroup!: GPUBindGroup;
     private running: boolean = true;
     private map: Chunk;
+    private camera!: Camera;
     public GameInitStatus: Promise<boolean>;
     private _uniformBuffer!: GPUBuffer;
     private _uniformGroup!: GPUBindGroup;
@@ -40,6 +43,7 @@ export class MainProgram {
         this.GameInitStatus = initWebGPUContext(prop.canvas).then(async ctx => {
             this._canvas = ctx.canvas;
             this._device = ctx.device;
+            this.camera = new Camera(this.fov, new Vector3(0,200,2000), this._canvas);
             await this.initialize().catch(error => {
                 throw Error(error)
             });
@@ -84,7 +88,7 @@ export class MainProgram {
                 targets: [{ format: "bgra8unorm" }]
             },
             primitive: {
-                cullMode: 'front'
+                cullMode: 'back'
             },
             depthStencil: {
                 depthWriteEnabled: true,
@@ -101,8 +105,10 @@ export class MainProgram {
             usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
         });
 
-        const rotationMatrix = new Float32Array(VecMatrix.get3DObjectMatrix(this.map.pos, this.map.size, this.map.rotations, this.fov, this.distview));
-        this._device.queue.writeBuffer(this._uniformBuffer, 0, rotationMatrix);
+        const viewMatrix = new VecMatrix(VecMatrix.FOV(this.camera.fov, adaptatorWidth/adaptatorHeight, 1, this.distview))
+            .multiply(this.camera.getCameraMatrix())
+            .multiply(VecMatrix.ScalingMatrix(this.map.size));
+        this._device.queue.writeBuffer(this._uniformBuffer, 0, new Float32Array(viewMatrix.getMatrix()));
 
         this._uniformGroup = this._device.createBindGroup({
             label: 'Uniforms',
@@ -168,7 +174,7 @@ export class MainProgram {
     }
 
     private async draw(time: number): Promise<void> {
-        //this.map.rotations.y += time * Math.PI / 5000;
+        await this.camera.move(time);
         const chunk: number[][] = this.map.getChunkVertexes();
         const vertexes = new Float32Array(chunk.flat());
         const vertexBuffer = this._device.createBuffer({
@@ -176,8 +182,11 @@ export class MainProgram {
             usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST
         });
         this._device.queue.writeBuffer(vertexBuffer, 0, vertexes);
-        const rotationMatrix = new Float32Array([...VecMatrix.get3DObjectMatrix(this.map.pos, this.map.size, this.map.rotations,this.fov, this.distview)]);
-        this._device.queue.writeBuffer(this._uniformBuffer, 0, rotationMatrix);
+
+        const viewMatrix = new VecMatrix(VecMatrix.FOV(this.camera.fov, adaptatorWidth/adaptatorHeight, 1, this.distview))
+            .multiply(this.camera.getCameraMatrix())
+            .multiply(VecMatrix.ScalingMatrix(this.map.size));
+        this._device.queue.writeBuffer(this._uniformBuffer, 0, new Float32Array(viewMatrix.getMatrix()));
 
         const commandEncoder = this._device.createCommandEncoder();
 
@@ -219,16 +228,7 @@ export class MainProgram {
     }
 
     public attachControls(appSliders: Record<string, Slider>) {
-        this.map.attachControls({
-            posX: appSliders.sliderX,
-            posY: appSliders.sliderY,
-            posZ: appSliders.sliderZ,
-            rotateX: appSliders.sliderAngleX,
-            rotateY: appSliders.sliderAngleY,
-            rotateZ: appSliders.sliderAngleZ,
-            size: appSliders.sliderSize,
-        });
-        appSliders.sliderFOV.attach((val) => this.fov = val*Math.PI/180)
+        appSliders.sliderFOV.attach((val) => this.camera.fov = val*Math.PI/180)
         appSliders.sliderDistance.attach((val) => this.distview = val)
     }
 

@@ -9,7 +9,7 @@ LICENSE file in the root directory of this source tree.
 import Vector3 from "./Vector3.ts";
 import {adaptatorHeight, adaptatorWidth} from "../../../constants/defaults.ts";
 
-type MatrixArray = [
+export type MatrixArray = [
     number, number, number, number,
     number, number, number, number,
     number, number, number, number,
@@ -135,6 +135,14 @@ export class VecMatrix {
         return this.matrix;
     }
 
+    public multiply(matrix: VecMatrix|MatrixArray): VecMatrix {
+        return new VecMatrix(VecMatrix.multiply(this, matrix));
+    }
+
+    public inverse(): VecMatrix {
+        return new VecMatrix(VecMatrix.inverse(this));
+    }
+
     public static multiply(m1: VecMatrix|MatrixArray, m2: VecMatrix|MatrixArray): MatrixArray {
         const ma: VecMatrix = Object.prototype.hasOwnProperty.call(m1,  "length") ? new VecMatrix(m1 as MatrixArray) : m1 as VecMatrix
         const mb: VecMatrix = Object.prototype.hasOwnProperty.call(m2,  "length") ? new VecMatrix(m2 as MatrixArray) : m2 as VecMatrix
@@ -195,11 +203,10 @@ export class VecMatrix {
             inverse[i] = augmentedMatrix[i].slice(n, 2 * n);
         }
 
-        const precision = Math.pow(10,15)
-        return inverse.flat(1).map(v => (Math.round(v*precision)/(precision))) as MatrixArray;
+        return inverse.flat(1) as MatrixArray;
     }
 
-    public static inverse2(m: number[]) {
+    public static inverse2(m: MatrixArray): MatrixArray {
         const dst = new Array(16);
 
         const m00 = m[0 * 4 + 0];
@@ -288,8 +295,7 @@ export class VecMatrix {
             (tmp20 * m12 + tmp23 * m22 + tmp17 * m02));
 
 
-        const precision = Math.pow(10,15)
-        return dst.map(v => (Math.round(v*precision)/(precision)));
+        return dst as MatrixArray;
     }
 
     public static addVertexFloat32Padding(mat: MatrixArray): number[] {

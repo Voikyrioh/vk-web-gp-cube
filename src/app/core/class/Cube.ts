@@ -25,12 +25,12 @@ type TriangeTextureCoordinates = [ [number, number], [number, number], [number, 
 export class Cube {
     static VertexesCount: number = 6*6;
     static Vertexes: CubeFaceVertexes = [   // FACE
-            [ 1,   1, 1],
+            [-1,  -1, 1],
             [-1,   1, 1],
-            [-1,  -1, 1],
-            [-1,  -1, 1],
-            [ 1,  -1, 1],
             [ 1,   1, 1],
+            [ 1,   1, 1],
+            [ 1,  -1, 1],
+            [-1,  -1, 1],
         ];
     static FaceColors: Record<Sides, Colors> = {
         [Sides.FACE]: Colors.Green,
@@ -42,22 +42,22 @@ export class Cube {
     };
     static FacesTexturesCoordinates: Record<Sides, [TriangeTextureCoordinates,TriangeTextureCoordinates]> = {
         [Sides.FACE]: [
-            [ [1/2, 1/3], [1/4, 1/3], [1/4, 2/3] ], [  [1/4, 2/3], [1/2, 2/3],[1/2, 1/3] ]
+            [ [1/4, 2/3], [1/4, 1/3], [1/2, 1/3] ], [  [1/2, 1/3], [1/2, 2/3],[1/4, 2/3] ]
         ],
         [Sides.BOTTOM]: [
-            [ [1/2, 2/3], [1/4, 2/3], [1/4, 1] ], [ [1/4, 1], [1/2, 1],[1/2, 2/3] ]
+            [ [1/4, 1], [1/4, 2/3], [1/2, 2/3] ], [ [1/2, 2/3], [1/2, 1],[1/4, 1] ]
         ],
         [Sides.RIGHT]: [
-            [ [3/4, 1/3], [1/2, 1/3], [1/2, 2/3] ], [ [1/2, 2/3], [3/4, 2/3], [3/4, 1/3] ]
+            [ [1/2, 2/3], [1/2, 1/3], [3/4, 1/3] ], [ [3/4, 1/3], [3/4, 2/3], [1/2, 2/3] ]
         ],
         [Sides.LEFT]: [
-            [ [1/4, 1/3], [0, 1/3], [0, 2/3] ], [ [0, 2/3], [1/4, 2/3], [1/4, 1/3] ]
+            [ [0, 2/3], [0, 1/3], [1/4, 1/3] ], [ [1/4, 1/3], [1/4, 2/3], [0, 2/3] ]
         ],
         [Sides.TOP]: [
-            [ [1/2, 0], [1/4, 0], [1/4, 1/3] ], [ [1/4, 1/3], [1/2, 1/3], [1/2, 0] ]
+            [ [1/4, 1/3], [1/4, 0], [1/2, 0] ], [ [1/2, 0], [1/2, 1/3], [1/4, 1/3] ]
         ],
         [Sides.BACK]: [
-            [ [1, 1/3], [3/4, 1/3], [3/4, 2/3] ], [ [3/4, 2/3], [1, 2/3], [1, 1/3] ]
+            [ [3/4, 2/3], [3/4, 1/3], [1, 1/3] ], [ [1, 1/3], [1, 2/3], [3/4, 2/3] ]
         ],
     }
 
@@ -87,20 +87,20 @@ export class Cube {
                     s,
                     [
                         new SimpleTriangle({
-                            a: Vector3.fromArray(this.angle.toArray()),
+                            a: this.angle.copy(),
                             coords: this.cubePosition
                                 .slice(0,3)
                                 .map(point => Vector3.fromArray(point))
                                 .map(Cube.CubeFaceRotations[s])
-                                .map((vec) => Vector3.fromArray(vec.toArray()).add(this.coordinates)) as TriangleVertexes
+                                .map((vec) => vec.copy().add(this.coordinates)) as TriangleVertexes
                         }),
                         new SimpleTriangle({
-                            a: Vector3.fromArray(this.angle.toArray()),
+                            a: this.angle.copy(),
                             coords: this.cubePosition
                                 .slice(3)
                                 .map(point => Vector3.fromArray(point))
                                 .map(Cube.CubeFaceRotations[s])
-                                .map((vec) => Vector3.fromArray(vec.toArray()).add(this.coordinates)) as TriangleVertexes
+                                .map((vec) => vec.copy().add(this.coordinates)) as TriangleVertexes
                         })
                     ]
                 ]
