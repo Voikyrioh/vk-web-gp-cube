@@ -7,16 +7,17 @@
  */
 
 import './style.css';
+import setupWebsiteScript from "./web/main.ts";
 import { Defaults } from './constants';
 import { NeccesarySliders } from "./app/types";
-import setupWebsiteScript from "./web/main.ts";
 import { Modal, Slider } from "./web/components";
-import { MainProgram } from "./app/core/class/MainProgram.ts";
+import {Engine} from "./app/core/engine/Engine.ts";
 
 
 async function startProgram() {
     const app = document.querySelector('#app-program');
     let canvasContext: HTMLCanvasElement = document.createElement('canvas');
+    canvasContext.setAttribute('tabIndex', "1");
     canvasContext.setAttribute('width', Defaults.adaptatorWidth.toString(10));
     canvasContext.setAttribute('height', Defaults.adaptatorHeight.toString(10));
     canvasContext.setAttribute('id', 'gpu-canvas');
@@ -28,29 +29,29 @@ async function startProgram() {
     }
 
     const appSliders: Record<NeccesarySliders, Slider> = {
-        'sliderX': new Slider({
+        /*'sliderX': new Slider({
             defaultValue: 0,
-            max: Defaults.adaptatorWidth / 2,
-            min: Defaults.adaptatorWidth / 2 * -1,
+            max: Defaults.adaptatorWidth,
+            min: Defaults.adaptatorWidth * -1,
             name: "X",
             step: 1,
             stopPoints: [0]
         }),
         'sliderY': new Slider({
-            defaultValue: 0,
-            max: Defaults.adaptatorHeight / 2,
-            min: Defaults.adaptatorHeight / 2 * -1,
+            defaultValue: -200,
+            max: Defaults.adaptatorHeight,
+            min: Defaults.adaptatorHeight * -1,
             name: "Y",
             step: 1,
             stopPoints: [0]
         }),
-        'sliderSize': new Slider({
-            defaultValue: Defaults.adaptatorWidth / 8,
-            max: Defaults.adaptatorWidth / 2,
-            min: 0,
-            name: "Size",
+        'sliderZ': new Slider({
+            defaultValue: -600,
+            max: 0,
+            min: -2000,
+            name: "Z",
             step: 1,
-            stopPoints: [Defaults.adaptatorWidth / 8, Defaults.adaptatorWidth / 4, 300]
+            stopPoints: [0]
         }),
         'sliderAngleX': new Slider({
             defaultValue: 0,
@@ -75,23 +76,47 @@ async function startProgram() {
             name: "Angle Z",
             step: 1,
             stopPoints: [-180, -90, -45, 0, 45, 90, 180]
+        }),
+        'sliderSize': new Slider({
+            defaultValue: 200,
+            max: 400,
+            min: 0,
+            name: "Size",
+            step: 5,
+            stopPoints: [50, 100, 150, 200, 250, 300, 350]
+        }),*/
+        'sliderFOV': new Slider({
+            defaultValue: 90,
+            max: 120,
+            min: 1,
+            name: "FOV",
+            step: 1,
+            stopPoints: [60,90]
+        }),
+        'sliderDistance': new Slider({
+            defaultValue: 1000,
+            max: 1001,
+            min: 1,
+            name: "Distance",
+            step: 10,
+            stopPoints: [201,401,601,801]
         })
     };
 
     for (const slider in appSliders) {
         document.getElementById("app-options")!.appendChild((appSliders[slider as NeccesarySliders]).getBlockElement());
     }
-    /*
-    const gpuContext = await Core.initWebGPUContext(canvasContext);
 
-    do {
-        await Promise.all([
-            new Promise(resolve => setTimeout(resolve, 1000/120)), // FORCE TO 60 FPS MAX
-            await drawCube(gpuContext.device, gpuContext.canvas, appSliders)]) // DRAW FUNCTION #TODO: Rename
-    } while (true)*/
-    const program = new MainProgram({ canvas: canvasContext});
-            program.attachControls(appSliders);
+    const program = new Engine("gpu-canvas");
+    //program.attachControls(appSliders);
 
+    updateFPSIndicator(program);
+}
+
+function updateFPSIndicator(program: Engine) {
+    const fpsIndicator = document.querySelector("#fps-indicator>b");
+    if(fpsIndicator) fpsIndicator.textContent = program.fps?.toString(10) ?? '';
+    requestAnimationFrame(() => {updateFPSIndicator(program)})
 }
 
 async function changlogModal () {

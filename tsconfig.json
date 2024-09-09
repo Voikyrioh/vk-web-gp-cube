@@ -1,9 +1,11 @@
 {
   "compilerOptions": {
     "allowImportingTsExtensions": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "lib": [
-      "ES2020",
+      "ES2022",
       "DOM",
       "DOM.Iterable",
       "ESNext"
@@ -15,16 +17,19 @@
     "noEmit": true,
     "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": true,
-    "noUnusedParameters": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
     /* Linting */
     "strict": true,
-    "target": "ES2020",
+    "target": "ES2022",
     "types": [
-      "@webgpu/types"
+      "@types/node",
+      "@webgpu/types",
+      "@types/mocha",
+      "@types/chai"
     ],
     "useDefineForClassFields": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["src/**/*.spec.ts"]
 }
