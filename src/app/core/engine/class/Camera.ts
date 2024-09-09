@@ -1,7 +1,9 @@
-import Vector3 from "./Vector3.ts";
-import {MatrixArray, VecMatrix} from "./VecMatrix.ts";
+import { Vector3 } from "../Maths/Vector/Vector3.ts";
+import {Matrix4Array} from "../Maths/types/Matrix.ts";
 import {ControlKeys, Controls} from "./Controls.ts";
-import {clamp, rotationReset} from "../../../utils";
+import {clamp, rotationReset} from "../Maths/Functions/Utils";
+import {Matrix4} from "../Maths/Matrix/Matrix4.ts";
+import {RotationMatrix3DX, RotationMatrix3DY, Translation3DMatrix} from "../Maths/Functions/3DMatrixOperations.ts";
 
 interface Movements {
     forward:    1|0;
@@ -16,7 +18,7 @@ export class Camera {
     public fov: number;
     public position: Vector3;
     public rotation: Vector3;
-    private view = new VecMatrix([
+    private view = new Matrix4([
         1, 0, 0, 0,
         0, 1, 0, 0,
         0, 0, 1, 0,
@@ -36,15 +38,15 @@ export class Camera {
     }
 
     private updateView() {
-        this.view = new VecMatrix(VecMatrix.TranslationMatrix(this.position))
-            .multiply(VecMatrix.RotationMatrixY(rotationReset(this.rotation.y)))
-            .multiply(VecMatrix.RotationMatrixX(clamp(this.rotation.x, -Math.PI/2, Math.PI/2)))
+        this.view = new Matrix4(Translation3DMatrix(this.position))
+            .multiply(RotationMatrix3DY(rotationReset(this.rotation.y)))
+            .multiply(RotationMatrix3DX(clamp(this.rotation.x, -Math.PI/2, Math.PI/2)))
     }
 
-    getCameraMatrix(): MatrixArray {
+    getCameraMatrix(): Matrix4Array {
         this.updateView();
 
-        return VecMatrix.inverse2(this.view.getMatrix());
+        return Matrix4.inverse2(this.view.toArray());
     }
 
     private getSideMovementValue(accVector: Vector3): number {

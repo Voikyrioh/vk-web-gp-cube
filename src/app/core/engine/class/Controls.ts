@@ -66,6 +66,8 @@ export class Controls implements ControlsKeys{
     private setupKeybindings(keymap: KeyMap, canvas: GPUCanvasContext) {
         canvas.canvas.addEventListener('keydown', (e: Event) => {
             const event = e as KeyboardEvent;
+            e.preventDefault();
+            e.stopPropagation();
             if (keymap[event.code] !== undefined) {
                 this.pressedKeys[keymap[event.code]] = true;
             }
@@ -79,6 +81,17 @@ export class Controls implements ControlsKeys{
         canvas.canvas.addEventListener('click', (e: Event) => {
             if ("requestPointerLock" in canvas.canvas) {
                 canvas.canvas.requestPointerLock();
+            }
+        })
+        canvas.canvas.addEventListener('keydown', (e: Event) => {
+            const event = e as KeyboardEvent;
+            if (event.code === 'F11') {
+                console.log(event);
+                event.preventDefault();
+                event.stopPropagation();
+                if ("requestFullscreen" in canvas.canvas) {
+                    canvas.canvas.requestFullscreen().catch(err => console.error(err));
+                }
             }
         })
     }

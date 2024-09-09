@@ -84,7 +84,7 @@ footer {
     justify-content: center;
     height: calc(100% - 1.17rem - 9px);
   }
-  
+
   .foot-block>.foot-infos>* {
     margin: 4px;
   }
@@ -127,21 +127,20 @@ body {
 }
 
 #app {
-  max-width: 1280px;
+  max-width: 100%;
   margin: 100px auto;
   text-align: center;
   display: flex;
   justify-content: space-evenly;
-  flex-direction: row;
-  box-shadow: rgba(16,16,16, 0.2) -15px 15px 4px ;
+  flex-direction: column;
+  box-shadow: rgba(16, 16, 16, 0.2) -15px 15px 4px ;
 
   @media screen and ( max-width: 1280px) {
-    flex-direction: column;
   }
 }
 
 #app>#app-program {
-  height: 600px;
+  height: 1080px;
 }
 
 #app>#app-program>#gpu-canvas {
@@ -149,18 +148,18 @@ body {
 }
 
 #app>#app-options {
-  box-shadow: rgb(var(--font-white)) 0 0 4px ;
-  background-color: rgba(var(--font-white), 0.2);
-  width: 800px;
-  height: 600px;
+  box-shadow: rgb(var(--font-black)) 0 0 4px ;
+  background-color: rgba(var(--font-black), 0.2);
+  width: 1920px;
+  height: 100px;
   display: flex;
-  flex-direction: column;
-  justify-content: space-around;
+  flex-direction: row;
+  justify-content: flex-start;
 }
 
 #app-options>.slider-block {
-  width: 80%;
-  margin: 10px auto;
+  width: 20%;
+  margin: 10px 30px;
   display: flex;
   flex-direction: column;
   justify-items: start;

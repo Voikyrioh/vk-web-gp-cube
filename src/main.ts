@@ -11,7 +11,7 @@ import setupWebsiteScript from "./web/main.ts";
 import { Defaults } from './constants';
 import { NeccesarySliders } from "./app/types";
 import { Modal, Slider } from "./web/components";
-import { MainProgram } from "./app/core/class/MainProgram.ts";
+import {Engine} from "./app/core/engine/Engine.ts";
 
 
 async function startProgram() {
@@ -86,7 +86,7 @@ async function startProgram() {
             stopPoints: [50, 100, 150, 200, 250, 300, 350]
         }),*/
         'sliderFOV': new Slider({
-            defaultValue: 60,
+            defaultValue: 90,
             max: 120,
             min: 1,
             name: "FOV",
@@ -107,13 +107,13 @@ async function startProgram() {
         document.getElementById("app-options")!.appendChild((appSliders[slider as NeccesarySliders]).getBlockElement());
     }
 
-    const program = new MainProgram({ canvas: canvasContext});
-            program.attachControls(appSliders);
+    const program = new Engine("gpu-canvas");
+    //program.attachControls(appSliders);
 
     updateFPSIndicator(program);
 }
 
-function updateFPSIndicator(program: MainProgram) {
+function updateFPSIndicator(program: Engine) {
     const fpsIndicator = document.querySelector("#fps-indicator>b");
     if(fpsIndicator) fpsIndicator.textContent = program.fps?.toString(10) ?? '';
     requestAnimationFrame(() => {updateFPSIndicator(program)})

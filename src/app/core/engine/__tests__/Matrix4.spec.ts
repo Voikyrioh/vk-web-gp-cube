@@ -1,18 +1,19 @@
-import {VecMatrix} from "../VecMatrix.ts";
-import {expect} from "chai";
 
-describe('[unit] VecMatrix Class', () => {
+import {expect} from "chai";
+import {Matrix4} from "../Maths/Matrix/Matrix4";
+
+describe('[unit] Matrix4 Class', () => {
     describe('Constructor', () => {
-        it('Should create VecMatrix from MatrixArray', () => {
-            expect(VecMatrix).to.be.a('function');
-            const myMatrix = new VecMatrix([
+        it('Should create Matrix4 from MatrixArray', () => {
+            expect(Matrix4).to.be.a('function');
+            const myMatrix = new Matrix4([
                 1,   2,  3,  4,
                 5,   6,  7,  8,
                 9,  10, 11, 12,
                 13, 14, 15, 16
             ]);
             expect(myMatrix).to.not.be.undefined;
-            expect(myMatrix.getMatrix()).to.be.a('array').that.deep.equal([
+            expect(myMatrix.toArray()).to.be.a('array').that.deep.equal([
                 1,   2,  3,  4,
                 5,   6,  7,  8,
                 9,  10, 11, 12,
@@ -21,21 +22,21 @@ describe('[unit] VecMatrix Class', () => {
         })
 
         it('Should set correct values into rows and columns', () => {
-            const myMatrix = new VecMatrix([
+            const myMatrix = new Matrix4([
                 1,   2,  3,  4,
                 5,   6,  7,  8,
                 9,  10, 11, 12,
                 13, 14, 15, 16
             ]);
 
-            expect(myMatrix.rows).to.have.lengthOf(4).and.to.be.deep.equal([
+            expect(myMatrix.rows()).to.have.lengthOf(4).and.to.be.deep.equal([
                 [1,   2,  3,  4],
                 [5,   6,  7,  8],
                 [9,  10, 11, 12],
                 [13, 14, 15, 16]
             ]);
 
-            expect(myMatrix.columns).to.have.lengthOf(4).and.to.be.deep.equal([
+            expect(myMatrix.columns()).to.have.lengthOf(4).and.to.be.deep.equal([
                 [ 1, 5,  9, 13 ],
                 [ 2, 6, 10, 14 ],
                 [ 3, 7, 11, 15 ],
@@ -46,7 +47,7 @@ describe('[unit] VecMatrix Class', () => {
 
     describe('multiply()', () => {
         it('should multiply correctly two MatrixArrays', () => {
-            expect(VecMatrix.multiply([
+            expect(Matrix4.multiply([
                     1,   2,  3,  4,
                     5,   6,  7,  8,
                     9,  10, 11, 12,
@@ -68,13 +69,13 @@ describe('[unit] VecMatrix Class', () => {
 
     describe('inverse2()', () => {
         it('should multiply correctly two MatrixArrays', () => {
-            const precision = Math.pow(10,15);
-            expect(VecMatrix.inverse2([
+            const precision = Math.pow(10,16);
+            expect(Matrix4.inverse2([
                     4, 7, 2, 3,
                     0, 5, 9, 4,
                     6, 1, 3, 8,
                     5, 4, 7, 1
-                ])
+                ]).map(v => (Math.round(v*(precision))/(precision)))
             ).to.be.a('array').that.deep.equal([
                 1/423, -6/47, 19/423, 61/423,
                 23/141, 7/282, -19/282, -7/141,
@@ -87,12 +88,12 @@ describe('[unit] VecMatrix Class', () => {
     describe('inverse()', () => {
         it('should multiply correctly two MatrixArrays', () => {
             const precision = Math.pow(10,15);
-            expect(VecMatrix.inverse([
+            expect(Matrix4.inverse([
                     4, 7, 2, 3,
                     0, 5, 9, 4,
                     6, 1, 3, 8,
                     5, 4, 7, 1
-                ])
+                ]).map(v => (Math.round(v*(precision))/(precision)))
             ).to.be.a('array').that.deep.equal([
                 1/423, -6/47, 19/423, 61/423,
                 23/141, 7/282, -19/282, -7/141,
