@@ -25,7 +25,7 @@ export class Camera {
         0, 0, 0, 1
     ]);
     private maxSpeed = 800;
-    private acceleration = 100;
+    private acceleration = 500;
     private controls: Controls;
     accelerationVector = Vector3.fromArray([0,0,0]);
 
@@ -73,8 +73,8 @@ export class Camera {
         const my = (movement.right - movement.left);
         const mz = (movement.up - movement.down);
         this.accelerationVector =  new Vector3(
-            clamp(x + (mx  * accFactor), this.maxSpeed * -1, this.maxSpeed) * (mx ? 1 : 0.95),
-            clamp(y + (my  * accFactor) ,this.maxSpeed * -1, this.maxSpeed) * (my ? 1 : 0.95),
+            clamp(x + (mx  * accFactor), this.maxSpeed * -1, this.maxSpeed) * (mx ? 1 : 0.92),
+            clamp(y + (my  * accFactor) ,this.maxSpeed * -1, this.maxSpeed) * (my ? 1 : 0.92),
             clamp(z + (mz  * this.maxSpeed * 1000), this.maxSpeed * -1 * 2, this.maxSpeed * 2)
         );
 
@@ -99,7 +99,7 @@ export class Camera {
 
                 this.position = this.position.copy().add(Vector3.fromArray([
                     this.getSideMovementValue(accel),
-                    (movement.up - movement.down),
+                    (movement.up * 20 - movement.down * 20),
                     this.getForwardMovementValue(accel)
                 ]));
             }

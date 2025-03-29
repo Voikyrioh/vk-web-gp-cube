@@ -9,8 +9,7 @@
 import './style.css';
 import setupWebsiteScript from "./web/main.ts";
 import { Defaults } from './constants';
-import { NeccesarySliders } from "./app/types";
-import { Modal, Slider } from "./web/components";
+import { Modal } from "./web/components";
 import {Engine} from "./app/core/engine/Engine.ts";
 
 
@@ -28,8 +27,8 @@ async function startProgram() {
         throw new Error('Could not create canvas context!');
     }
 
-    const appSliders: Record<NeccesarySliders, Slider> = {
-        /*'sliderX': new Slider({
+    /*const appSliders: Record<NeccesarySliders, Slider> = {
+        'sliderX': new Slider({
             defaultValue: 0,
             max: Defaults.adaptatorWidth,
             min: Defaults.adaptatorWidth * -1,
@@ -84,7 +83,7 @@ async function startProgram() {
             name: "Size",
             step: 5,
             stopPoints: [50, 100, 150, 200, 250, 300, 350]
-        }),*/
+        }),
         'sliderFOV': new Slider({
             defaultValue: 90,
             max: 120,
@@ -105,11 +104,9 @@ async function startProgram() {
 
     for (const slider in appSliders) {
         document.getElementById("app-options")!.appendChild((appSliders[slider as NeccesarySliders]).getBlockElement());
-    }
+    }*/
 
     const program = new Engine("gpu-canvas");
-    //program.attachControls(appSliders);
-
     updateFPSIndicator(program);
 }
 

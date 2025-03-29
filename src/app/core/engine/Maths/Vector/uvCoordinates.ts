@@ -1,59 +1,50 @@
-import {PointVertexes} from "../../../types/BasicTypes.ts";
+export class UvCoordinates {
 
-export class Vector3 {
-    public x: number;
-    public y: number;
-    public z: number;
-
-    constructor(x: number, y: number, z:number) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+    constructor(
+        public u: number,
+        public v: number
+    ) {
     }
 
     public scale(s: number) {
-        this.x = s * this.x;
-        this.y = s * this.y;
-        this.z = s * this.z;
+        this.u = s * this.u;
+        this.v = s * this.v;
     }
 
-    public toArray(): PointVertexes {
-        return [this.x, this.y, this.z];
+    public toArray(): [number, number] {
+        return [this.u, this.v];
     }
 
-    public copy(): Vector3 {
-        return Vector3.fromArray(this.toArray());
+    public copy(): UvCoordinates {
+        return UvCoordinates.fromArray(this.toArray());
     }
 
-    public add(vector: Vector3): Vector3 {
-        this.x += vector.x;
-        this.y += vector.y;
-        this.z += vector.z;
+    public add(vector: UvCoordinates): UvCoordinates {
+        this.u += vector.u;
+        this.v += vector.v;
 
         return this;
     }
 
-    public multiply(vector: Vector3): Vector3 {
-        this.x *= vector.x;
-        this.y *= vector.y;
-        this.z *= vector.z;
+    public multiply(vector: UvCoordinates): UvCoordinates {
+        this.u *= vector.u;
+        this.v *= vector.v;
 
         return this;
     }
 
-    public divide(vector: Vector3): Vector3 {
-        this.x /= vector.x;
-        this.y /= vector.y;
-        this.z /= vector.z;
+    public divide(vector: UvCoordinates): UvCoordinates {
+        this.u /= vector.u;
+        this.v /= vector.v;
 
         return this;
     }
 
-    static fromArray(array: PointVertexes): Vector3 {
+    static fromArray(array: [number, number]): UvCoordinates {
         return new this(...array);
     }
 
     public toString(): string {
-        return `${this.x},${this.y},${this.z}`;
+        return `${this.u},${this.v}`;
     }
 }

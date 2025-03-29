@@ -17,7 +17,7 @@ export enum Sides {
     BACK ,
 }
 
-export class Cube {
+export class _Cube {
     static VertexesCount: number = 6*6;
     static Vertexes: number[][] = [
         [-1,  -1, 1],
@@ -73,7 +73,7 @@ export class Cube {
     private reloadCubeState() {
         const generateSides = [ Sides.FACE, Sides.BOTTOM, Sides.RIGHT, Sides.LEFT, Sides.TOP, Sides.BACK];
         this.sides = generateSides.map(side => {
-            return Cube.Vertexes.map(point => Cube.CubeFaceRotations[side](Vector3.fromArray(point as [number,number,number])).add(this.coordinates))
+            return _Cube.Vertexes.map(point => _Cube.CubeFaceRotations[side](Vector3.fromArray(point as [number,number,number])).add(this.coordinates))
         });
     }
 
@@ -92,12 +92,12 @@ export class Cube {
 
     public toFaceVertexes(): number[][] {
         return [
-            this.sides[Sides.FACE].map((point, i) => [...point.toArray(), ...Cube.FacesTexturesCoordinates[Sides.FACE][i]]).flat(1),
-            this.sides[Sides.BOTTOM].map((point, i) => [...point.toArray(), ...Cube.FacesTexturesCoordinates[Sides.BOTTOM][i]]).flat(1),
-            this.sides[Sides.RIGHT].map((point, i) => [...point.toArray(), ...Cube.FacesTexturesCoordinates[Sides.RIGHT][i]]).flat(1),
-            this.sides[Sides.LEFT].map((point, i) => [...point.toArray(), ...Cube.FacesTexturesCoordinates[Sides.LEFT][i]]).flat(1),
-            this.sides[Sides.TOP].map((point, i) => [...point.toArray(), ...Cube.FacesTexturesCoordinates[Sides.TOP][i]]).flat(1),
-            this.sides[Sides.BACK].map((point, i) => [...point.toArray(), ...Cube.FacesTexturesCoordinates[Sides.BACK][i]]).flat(1),
+            this.sides[Sides.FACE].map((point, i) => [...point.toArray(), ..._Cube.FacesTexturesCoordinates[Sides.FACE][i]]).flat(1),
+            this.sides[Sides.BOTTOM].map((point, i) => [...point.toArray(), ..._Cube.FacesTexturesCoordinates[Sides.BOTTOM][i]]).flat(1),
+            this.sides[Sides.RIGHT].map((point, i) => [...point.toArray(), ..._Cube.FacesTexturesCoordinates[Sides.RIGHT][i]]).flat(1),
+            this.sides[Sides.LEFT].map((point, i) => [...point.toArray(), ..._Cube.FacesTexturesCoordinates[Sides.LEFT][i]]).flat(1),
+            this.sides[Sides.TOP].map((point, i) => [...point.toArray(), ..._Cube.FacesTexturesCoordinates[Sides.TOP][i]]).flat(1),
+            this.sides[Sides.BACK].map((point, i) => [...point.toArray(), ..._Cube.FacesTexturesCoordinates[Sides.BACK][i]]).flat(1),
         ].filter((side: number[], index: Sides) => !this._obfuscatedSide[index]);
     }
 }

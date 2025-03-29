@@ -4,10 +4,10 @@ import {get3DSpacePerspective, Scaling3DMatrix} from "./Maths/Functions/3DMatrix
 import {adaptatorHeight, adaptatorWidth} from "../../../constants/defaults.ts";
 // @ts-ignore
 import shader from '../../../shaders/basic.wgsl?raw';
-import {Cube} from "./class/Cube.ts";
-import {Chunk} from "./class/Chunk.ts";
 import {Camera} from "./class/Camera.ts";
 import {Vector3} from "./Maths/Vector/Vector3.ts";
+import {Chunk} from "./class/Chunk/Chunk.ts";
+import {ChunkRenderer} from "./class/Chunk/ChunkRenderer.ts";
 
 export interface EngineContext {
     adapter: GPUAdapter;
@@ -21,10 +21,9 @@ export interface EngineContext {
 
 export class Engine {
     protected engineContext!: EngineContext;
-    public Ready = false;
     private map!: Chunk;
     private camera!: Camera;
-    private distview: number = 1000;
+    private distview: number = 100000;
     private fov: number = 90 * Math.PI  / 180;
     public fps = 0;
     private framerateHistory: number[] = [];
@@ -34,7 +33,7 @@ export class Engine {
 
         Engine.CheckGPUCompatibility(canvas).then(({adapter, canvasContext}) => {
             Engine.CreateContext(canvasContext, adapter).then((context: EngineContext) => {
-                this.map = new Chunk(new Vector3(0,0,0));
+                this.map = Chunk.generateChunk(new Vector3(0,0,0));
                 this.camera = new Camera(this.fov, new Vector3(0,200,2000), context.canvas);
                 this.engineContext = context;
                 this.initEngine().catch(error => {
@@ -50,7 +49,6 @@ export class Engine {
 
     protected async updateState(time: number) {
         await this.camera.move(time);
-        const cubes: Cube[] = this.map.getChunkVertexes()
         const canvasTexture = this.engineContext.canvas.getCurrentTexture();
         const depthTexture = this.engineContext.device.createTexture({
             size: [canvasTexture.width, canvasTexture.height],
@@ -85,69 +83,23 @@ export class Engine {
         passEncoder.setBindGroup(0, this.engineContext.uniformGroup[0]);
         passEncoder.setBindGroup(1, this.engineContext.bindGroup[0]);
 
-        cubes.forEach((cube, index) => {
-            const vertexes = new Float32Array(cube.toVertexes());
+        await this.map.reloadChunkObfuscation();
+        const chunkRenderer: ChunkRenderer = new ChunkRenderer(this.map);
+        while(!chunkRenderer.done) {
+            const vertexes = await chunkRenderer.nextRender();
+            if (chunkRenderer.done) break;
+
             const vertexBuffer = this.engineContext.device.createBuffer({
                 size: vertexes.byteLength,
                 usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST
             });
             this.engineContext.device.queue.writeBuffer(vertexBuffer, 0, vertexes);
             passEncoder.setVertexBuffer(0, vertexBuffer);
-            passEncoder.draw( Cube.VertexesCount );
-        });
+            passEncoder.draw(chunkRenderer.vertexesCount);
+        }
+
         passEncoder.end();
         const commandBuffer = commandEncoder.finish();
-        this.engineContext.device.queue.submit([commandBuffer]);
-    }
-
-
-    protected async draw(time: number) {
-        await this.camera.move(time);
-        const cubes: Cube[] = this.map.getChunkVertexes()
-        const viewMatrix = new Matrix4(get3DSpacePerspective(this.camera.fov, adaptatorWidth/adaptatorHeight, 1, this.distview))
-            .multiply(this.camera.getCameraMatrix())
-            .multiply(Scaling3DMatrix(this.map.size));
-        this.engineContext.device.queue.writeBuffer(this.engineContext.uniformBuffer[0], 0, new Float32Array(viewMatrix.toArray()));
-
-        const vertexes = new Float32Array(cubes.map(c => c.toVertexes()).flat());
-        const vertexBuffer = this.engineContext.device.createBuffer({
-            size: vertexes.byteLength,
-            usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST
-        });
-        this.engineContext.device.queue.writeBuffer(vertexBuffer, 0, vertexes);
-
-        const commandEncoder = this.engineContext.device.createCommandEncoder();
-
-        const canvasTexture = this.engineContext.canvas.getCurrentTexture();
-        const depthTexture = this.engineContext.device.createTexture({
-            size: [canvasTexture.width, canvasTexture.height],
-            format: 'depth24plus',
-            usage: GPUTextureUsage.RENDER_ATTACHMENT,
-        });
-        const passEncoder = commandEncoder.beginRenderPass({
-            colorAttachments: [{
-                view: this.engineContext.canvas.getCurrentTexture().createView(),
-                loadOp: 'clear',
-                clearValue: [33/255, 33/255, 33/255, 1],
-                storeOp: 'store'
-            }],
-            depthStencilAttachment: {
-                view: depthTexture.createView(),
-                depthClearValue: 1.0,
-                depthLoadOp: 'clear',
-                depthStoreOp: 'store',
-            },
-        });
-        passEncoder.setViewport(0,0,adaptatorWidth,adaptatorHeight, 0,1);
-        passEncoder.setPipeline(this.engineContext.pipeline);
-        passEncoder.setVertexBuffer(0, vertexBuffer);
-        passEncoder.setBindGroup(0, this.engineContext.uniformGroup[0]);
-        passEncoder.setBindGroup(1, this.engineContext.bindGroup[0]);
-        passEncoder.draw( cubes.length * Cube.VertexesCount );
-        passEncoder.end();
-
-        const commandBuffer = commandEncoder.finish();
-
         this.engineContext.device.queue.submit([commandBuffer]);
     }
 
@@ -160,7 +112,6 @@ export class Engine {
                this.setAppFPS(buffer);
             }
             await this.updateState(t1-t0);
-            //await this.draw(t1-t0);
             this.mainLoop(t1)
         });
     }
@@ -288,9 +239,7 @@ export class Engine {
             throw new EngineError(EngineErrorType.WPGU_NOT_ACTIVATED);
         }
 
-        const adapter = await navigator.gpu.requestAdapter({
-            powerPreference: "high-performance"
-        });
+        const adapter = await navigator.gpu.requestAdapter({});
 
         if (!adapter) {
             throw new EngineError(EngineErrorType.MINIMAL_CONFIGURATION);
