@@ -6,8 +6,6 @@ export class GameMap {
     #loadedChunks = new Map<number, Chunk>();
     constructor() {
         this.#loadedChunks.set(0, Chunk.generateChunk(new Vector3(0,0,0)));
-        this.#loadedChunks.set(1, Chunk.generateChunk(new Vector3(16,0,0)));
-        this.#loadedChunks.set(2, Chunk.generateChunk(new Vector3(32,0,0)));
     }
 
     static getChunkReference(x: number,z: number): number {

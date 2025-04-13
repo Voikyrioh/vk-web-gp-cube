@@ -8,7 +8,6 @@ import {Camera} from "./class/Camera.ts";
 import {Vector3} from "./Maths/Vector/Vector3.ts";
 import {ChunkRenderer} from "./class/Chunk/ChunkRenderer.ts";
 import {GameMap} from "./class/GameMap.ts";
-import {Chunk} from "./class/Chunk/Chunk.ts";
 
 export interface EngineContext {
     adapter: GPUAdapter;
