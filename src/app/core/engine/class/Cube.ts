@@ -83,12 +83,12 @@ export abstract class Polygon {
 
 export class Cube extends Polygon {
     static Vertexes: Vector3[] = [
-        Vector3.fromArray([-1,  -1, 1]),
-        Vector3.fromArray([-1,   1, 1]),
-        Vector3.fromArray([ 1,   1, 1]),
-        Vector3.fromArray([ 1,   1, 1]),
-        Vector3.fromArray([ 1,  -1, 1]),
-        Vector3.fromArray([-1,  -1, 1]),
+        Vector3.fromArray([-0.5,  -0.5, 0.5]),
+        Vector3.fromArray([-0.5,   0.5, 0.5]),
+        Vector3.fromArray([ 0.5,   0.5, 0.5]),
+        Vector3.fromArray([ 0.5,   0.5, 0.5]),
+        Vector3.fromArray([ 0.5,  -0.5, 0.5]),
+        Vector3.fromArray([-0.5,  -0.5, 0.5]),
     ];
 
 
@@ -143,5 +143,9 @@ export class Cube extends Polygon {
 
     public toVertexes(): renderVertexes {
         return [...this.faces.values()].map(face => face.render()).flat(1)
+    }
+
+    setObfuscatedFace(face: Side) {
+        this.faces.get(face)?.setObfuscated(true);
     }
 }

@@ -56,4 +56,12 @@ export class Vector3 {
     public toString(): string {
         return `${this.x},${this.y},${this.z}`;
     }
+
+    static fromString(value: string): Vector3 {
+        const [x,y,z] = value.split(',').map(Number);
+        if (x === undefined || y === undefined || z === undefined) {
+            throw new Error('Invalid vector string');
+        }
+        return new this(x, y, z)
+    }
 }

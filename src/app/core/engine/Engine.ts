@@ -6,8 +6,9 @@ import {adaptatorHeight, adaptatorWidth} from "../../../constants/defaults.ts";
 import shader from '../../../shaders/basic.wgsl?raw';
 import {Camera} from "./class/Camera.ts";
 import {Vector3} from "./Maths/Vector/Vector3.ts";
-import {Chunk} from "./class/Chunk/Chunk.ts";
 import {ChunkRenderer} from "./class/Chunk/ChunkRenderer.ts";
+import {GameMap} from "./class/GameMap.ts";
+import {Chunk} from "./class/Chunk/Chunk.ts";
 
 export interface EngineContext {
     adapter: GPUAdapter;
@@ -21,7 +22,7 @@ export interface EngineContext {
 
 export class Engine {
     protected engineContext!: EngineContext;
-    private map!: Chunk;
+    private map!: GameMap;
     private camera!: Camera;
     private distview: number = 100000;
     private fov: number = 90 * Math.PI  / 180;
@@ -33,7 +34,7 @@ export class Engine {
 
         Engine.CheckGPUCompatibility(canvas).then(({adapter, canvasContext}) => {
             Engine.CreateContext(canvasContext, adapter).then((context: EngineContext) => {
-                this.map = Chunk.generateChunk(new Vector3(0,0,0));
+                this.map = new GameMap();
                 this.camera = new Camera(this.fov, new Vector3(0,200,2000), context.canvas);
                 this.engineContext = context;
                 this.initEngine().catch(error => {
@@ -58,7 +59,7 @@ export class Engine {
 
         const viewMatrix = new Matrix4(get3DSpacePerspective(this.camera.fov, adaptatorWidth/adaptatorHeight, 1, this.distview))
             .multiply(this.camera.getCameraMatrix())
-            .multiply(Scaling3DMatrix(this.map.size));
+            .multiply(Scaling3DMatrix(new Vector3(100, 100, 100)));
 
         this.engineContext.device.queue.writeBuffer(this.engineContext.uniformBuffer[0], 0, new Float32Array(viewMatrix.toArray()));
 
@@ -83,20 +84,22 @@ export class Engine {
         passEncoder.setBindGroup(0, this.engineContext.uniformGroup[0]);
         passEncoder.setBindGroup(1, this.engineContext.bindGroup[0]);
 
-        await this.map.reloadChunkObfuscation();
-        const chunkRenderer: ChunkRenderer = new ChunkRenderer(this.map);
-        while(!chunkRenderer.done) {
-            const vertexes = await chunkRenderer.nextRender();
-            if (chunkRenderer.done) break;
+        for (const chunk of this.map.getChunks()) {
+            const chunkRenderer: ChunkRenderer = new ChunkRenderer(chunk);
+            while(!chunkRenderer.done) {
+                const vertexes = await chunkRenderer.nextRender(this.map);
+                if (chunkRenderer.done) break;
 
-            const vertexBuffer = this.engineContext.device.createBuffer({
-                size: vertexes.byteLength,
-                usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST
-            });
-            this.engineContext.device.queue.writeBuffer(vertexBuffer, 0, vertexes);
-            passEncoder.setVertexBuffer(0, vertexBuffer);
-            passEncoder.draw(chunkRenderer.vertexesCount);
+                const vertexBuffer = this.engineContext.device.createBuffer({
+                    size: vertexes.byteLength,
+                    usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST
+                });
+                this.engineContext.device.queue.writeBuffer(vertexBuffer, 0, vertexes);
+                passEncoder.setVertexBuffer(0, vertexBuffer);
+                passEncoder.draw(chunkRenderer.vertexesCount);
+            }
         }
+
 
         passEncoder.end();
         const commandBuffer = commandEncoder.finish();
@@ -213,7 +216,7 @@ export class Engine {
 
         const viewMatrix = new Matrix4(get3DSpacePerspective(this.camera.fov, adaptatorWidth/adaptatorHeight, 1, this.distview))
             .multiply(this.camera.getCameraMatrix())
-            .multiply(Scaling3DMatrix(this.map.size));
+            .multiply(Scaling3DMatrix(new Vector3(100, 100, 100)));
         this.engineContext.device.queue.writeBuffer(this.engineContext.uniformBuffer[0], 0, new Float32Array(viewMatrix.toArray()));
 
         this.engineContext.uniformGroup.push(this.engineContext.device.createBindGroup({
