@@ -1,14 +1,14 @@
 # This is a basic workflow to help you get started with Actions
-name: CD
+name: Deploy to dev
 
 # Controls when the action will run.
 on:
-  release:
-    types:
-      - published
+  workflow_dispatch
+
 
 jobs:
   deploy:
+    name: Deploiement de ${{ github.ref_name }} sur DEV
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -21,7 +21,7 @@ jobs:
         shell: bash
         env:
           SSH_PRIVATE_KEY: ${{secrets.PRIVATE_KEY}}
-          SSH_KNOWN_HOSTS: ${{secrets.HOST}}
+          SSH_KNOWN_HOSTS: ${{secrets.DEV_HOST}}
 
       - name: Install PM2 locally
         run: |
@@ -30,12 +30,13 @@ jobs:
       - name: Create env file
         run: |
           touch .env
-          echo SERVER_PORT=${{ secrets.PORT }} >> .env
-          echo SERVER_IP=${{ secrets.HOST }} >> .env
-          echo SERVER_USER=${{ secrets.USERNAME }} >> .env
+          echo SERVER_PORT=${{ secrets.DEV_PORT }} >> .env
+          echo SERVER_IP=${{ secrets.DEV_HOST }} >> .env
+          echo SERVER_USER=${{ secrets.DEV_USERNAME }} >> .env
           echo GIT_TOKEN=${{ secrets.GIT_TOKEN }} >> .env
-          echo WEB_CUBE_PATH=${{ secrets.PROJECT_PATH }} >> .env
+          echo WEB_CUBE_PATH=${{ secrets.PROJECT_PATH_DEV }} >> .env
+          echo BRANCH=${{ github.ref_name }} >> .env
 
       - name: Deploy with PM2
         run: |
-          env $(cat .env | grep -v \"#\" | xargs) pm2 deploy ecosystem.config.cjs production
+          env $(cat .env | grep -v \"#\" | xargs) pm2 deploy ecosystem.config.cjs development

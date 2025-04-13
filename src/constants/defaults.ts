@@ -1,2 +1,2 @@
-export const adaptatorWidth = 800;
-export const adaptatorHeight = 600;
+export const adaptatorWidth = 1920;
+export const adaptatorHeight = 1080;
