@@ -1,0 +1,25 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump_type:
+        description: "Type de release"
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+        default: patch
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  release:
+    uses: voikyrioh/infra-as-code/.github/workflows/ci-release.yml@main
+    with:
+      app_name: webgpu-cube
+      bump_type: ${{ inputs.bump_type }}
+    secrets: inherit
