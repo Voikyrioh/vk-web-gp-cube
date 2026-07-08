@@ -18,7 +18,7 @@ permissions:
 
 jobs:
   release:
-    uses: voikyrioh/infra-as-code/.github/workflows/ci-release.yml@main
+    uses: voikyrioh/workflows/.github/workflows/ci-release.yml@main
     with:
       app_name: webgpu-cube
       bump_type: ${{ inputs.bump_type }}
